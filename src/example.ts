@@ -1,8 +1,7 @@
 import * as MP from "@bandaloo/merge-pass";
 import * as PP from "postpre";
-
-const H = 1920;
-const V = 1080;
+import { roseDots } from "./draws/rosedots";
+import { H, V } from "./shorthands";
 
 const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
 const gl = glCanvas.getContext("webgl2");
@@ -26,36 +25,24 @@ const merger = new MP.Merger(
   gl
 );
 
-// dwitter sim
-const C = Math.cos;
-const S = Math.sin;
-const T = Math.tan;
+// add mouse controls
+glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());
+glCanvas.addEventListener("mousemove", (e) => {
+  const rect = glCanvas.getBoundingClientRect();
+  mousePos.x = (H * (e.clientX - rect.left)) / rect.width;
+  mousePos.y = (V * (rect.height - (e.clientY - rect.top))) / rect.height;
+});
 
-let x: CanvasRenderingContext2D;
-let c: HTMLCanvasElement;
-let R = (r?: any, g?: any, b?: any, a: any = 1) =>
-  `rgba(${r | 0},${g | 0},${b | 0},${a})`;
-
-x = source;
-c = sourceCanvas;
-
-const redSpiral = (t: number, frames: number) => {
-  x.fillStyle = "white";
-  x.fillRect(0, 0, H, V);
-  let d;
-  for (let i = 50; (i -= 0.5); ) {
-    x.beginPath();
-    d = 2 * C((2 + S(t / 99)) * 2 * i);
-    x.arc(H / 2 + d * 10 * C(i) * i, V / 2 + d * 9 * S(i) * i, i, 0, 44 / 7);
-    x.fillStyle = R(i * 5);
-    x.fill();
-  }
-};
+// fullscreen listener
+sourceCanvas.addEventListener("click", () => sourceCanvas.requestFullscreen());
 
 let frames = 0;
 
+// TODO randomize the draw funcs, splitting across extra buffers
+const drawFunc = roseDots();
+
 const update = (time: number) => {
-  redSpiral(time / 1000, frames++);
+  drawFunc(time / 1000, frames, source, sourceCanvas);
   merger.draw(time / 1000);
   requestAnimationFrame(update);
 };
