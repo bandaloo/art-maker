@@ -1,3 +1,5 @@
+import { Vec4, EffectLoop } from "@bandaloo/merge-pass";
+
 // default resolution
 export const H = 1920;
 export const V = 1080;
@@ -17,6 +19,8 @@ export type DrawFunc = (
   x: CanvasRenderingContext2D,
   c: HTMLCanvasElement
 ) => void;
+
+export type EffectFunc = () => Vec4 | EffectLoop;
 
 export type TupleVec2 = [number, number];
 export type TupleVec3 = [number, number, number];

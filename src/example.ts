@@ -1,6 +1,7 @@
 import * as MP from "@bandaloo/merge-pass";
 import * as PP from "postpre";
 import { roseDots } from "./draws/rosedots";
+import { randomEffect } from "./effectrand";
 import { H, V } from "./utils";
 
 const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
@@ -19,11 +20,14 @@ if (source === null) {
   throw new Error("problem getting the source context");
 }
 
-const merger = new MP.Merger(
-  [PP.kaleidoscope(), PP.noisedisplacement()],
-  sourceCanvas,
-  gl
-);
+const effects: (MP.Vec4 | MP.EffectLoop)[] = [];
+
+// pick random effects
+for (let i = 0; i < 3; i++) {
+  effects.push(randomEffect());
+}
+
+const merger = new MP.Merger(effects, sourceCanvas, gl, { channels: [null] });
 
 // add mouse controls
 glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());
