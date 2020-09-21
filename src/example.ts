@@ -1,7 +1,7 @@
 import * as MP from "@bandaloo/merge-pass";
 import * as PP from "postpre";
 import { roseDots } from "./draws/rosedots";
-import { H, V } from "./shorthands";
+import { H, V } from "./utils";
 
 const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
 const gl = glCanvas.getContext("webgl2");
