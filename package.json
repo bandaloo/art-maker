@@ -1,0 +1,24 @@
+{
+  "name": "art-maker",
+  "version": "0.0.0",
+  "description": "art generator that uses the 2D canvas and shaders",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc --outDir dist",
+    "bundle": "npx browserify dist/example.js -o bundle.js",
+    "buildwatch": "npx tsc -w --outDir dist",
+    "bundlewatch": "npx watchify dist/example.js -o bundle.js"
+  },
+  "author": "Cole Granof",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.5.2",
+    "typescript": "^4.0.3",
+    "watchify": "^3.11.1"
+  },
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "postpre": "^0.1.2"
+  }
+}
