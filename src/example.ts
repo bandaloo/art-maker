@@ -1,8 +1,7 @@
 import * as MP from "@bandaloo/merge-pass";
-import * as PP from "postpre";
 import { roseDots } from "./draws/rosedots";
-import { randomEffect } from "./effectrand";
-import { H, V } from "./utils";
+import { randomEffects } from "./effectrand";
+import { Effect, H, V } from "./utils";
 
 const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
 const gl = glCanvas.getContext("webgl2");
@@ -20,14 +19,11 @@ if (source === null) {
   throw new Error("problem getting the source context");
 }
 
-const effects: (MP.Vec4 | MP.EffectLoop)[] = [];
+const effects = randomEffects(3);
 
-// pick random effects
-for (let i = 0; i < 3; i++) {
-  effects.push(randomEffect());
-}
-
-const merger = new MP.Merger(effects, sourceCanvas, gl, { channels: [null] });
+const merger = new MP.Merger(effects, sourceCanvas, gl, {
+  channels: [null, null],
+});
 
 // add mouse controls
 glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());

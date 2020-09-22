@@ -20,7 +20,8 @@ export type DrawFunc = (
   c: HTMLCanvasElement
 ) => void;
 
-export type EffectFunc = () => Vec4 | EffectLoop;
+export type Effect = Vec4 | EffectLoop;
+export type EffectFunc = () => Effect;
 
 export type TupleVec2 = [number, number];
 export type TupleVec3 = [number, number, number];
@@ -33,4 +34,12 @@ export function mix<T extends TupleVec3>(a: T, b: T, num: number): TupleVec3;
 export function mix<T extends TupleVec4>(a: T, b: T, num: number): TupleVec4;
 export function mix<T extends TupleVec>(a: T, b: T, num: number): T {
   return a.map((n, i) => n + (b[i] - n) * num) as T;
+}
+
+export function randBetween(lo: number, hi: number) {
+  return lo + (hi - lo) * Math.random();
+}
+
+export function randInt(num: number) {
+  return Math.floor(Math.random() * num);
 }
