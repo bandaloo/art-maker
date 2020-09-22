@@ -1,6 +1,6 @@
 {
   "name": "art-maker",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "art generator that uses the 2D canvas and shaders",
   "main": "dist/index.js",
   "scripts": {
