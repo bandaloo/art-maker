@@ -8,17 +8,18 @@ import {
   fcolor,
   a1,
   op,
+  bloom,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
+  celshade,
   foggyrays,
   kaleidoscope,
   noisedisplacement,
-  oldfilm,
   vignette,
 } from "postpre";
 import { ChanceTable } from "./chancetable";
-import { Effect, EffectFunc, randBetween, randInt } from "./utils";
+import { Effect, EffectFunc, randBetween } from "./utils";
 
 const kaleidoscopeRand = () => {
   const chanceTable = new ChanceTable<number>();
@@ -55,6 +56,12 @@ const blurAndTraceRand = () => {
   return blurandtrace(randBetween(-1, 1));
 };
 
+const bloomRand = () => {
+  const threshold = randBetween(0.3, 0.5);
+  const boost = randBetween(1.2, 1.5);
+  return bloom(threshold, 1, 1, boost, 0);
+};
+
 const hueRotateRand = () => {
   const speed = randBetween(0.01, 1) ** 2;
   const timeExpr = op(time(), "*", speed);
@@ -70,20 +77,23 @@ const hueRotateRand = () => {
   );
 };
 
-const chanceTable = new ChanceTable<EffectFunc>();
+const celShadeRand = () => {
+  return celshade(1, 0, 0.2, 0.03);
+};
 
-// TODO bloom can share the blur and trace scratch buffer (0)
+const chanceTable = new ChanceTable<EffectFunc>();
 
 chanceTable.addAll([
   [kaleidoscopeRand, 2, -Infinity],
-  [noiseDisplacementRand, 1],
+  [noiseDisplacementRand, 3, -1],
   [edgeRand, 1],
   [blurAndTraceRand, 0.5, -0.25],
   [vignette, 0.5],
   [hueRotateRand, 1, -Infinity],
-  //[oldfilm, 0.25, -Infinity],
   [foggyRaysRand, 3, -Infinity],
-  [motionBlurRand, 0.5, -Infinity],
+  [motionBlurRand, 1, -Infinity],
+  [bloomRand, 0.25, -Infinity],
+  [celShadeRand, 3, -Infinity],
 ]);
 
 export function randomEffects(num: number): Effect[] {

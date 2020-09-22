@@ -19,6 +19,6 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
-    "postpre": "^0.1.3"
+    "postpre": "^0.1.5"
   }
 }

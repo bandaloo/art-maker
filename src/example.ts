@@ -1,7 +1,7 @@
 import * as MP from "@bandaloo/merge-pass";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { Effect, H, V } from "./utils";
+import { H, V } from "./utils";
 
 const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
 const gl = glCanvas.getContext("webgl2");
@@ -19,7 +19,7 @@ if (source === null) {
   throw new Error("problem getting the source context");
 }
 
-const effects = randomEffects(3);
+const effects = [...randomEffects(3)];
 
 const merger = new MP.Merger(effects, sourceCanvas, gl, {
   channels: [null, null],

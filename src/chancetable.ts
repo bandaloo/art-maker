@@ -29,7 +29,6 @@ export class ChanceTable<T> {
     let count = 0;
     for (const [result, chance] of map.entries()) {
       if (choice > count && choice < count + chance.weight) {
-        // TODO change this
         chance.weight = Math.max(chance.weight + chance.decr, 0);
         return result;
       }
