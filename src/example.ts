@@ -3,48 +3,65 @@ import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
 import { H, V } from "./utils";
 
-const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
-const gl = glCanvas.getContext("webgl2");
+let curAnimationFrame: number;
 
-const mousePos = { x: 0, y: 0 };
-
-if (gl === null) {
-  throw new Error("problem getting the gl context");
-}
-
-const sourceCanvas = document.getElementById("source") as HTMLCanvasElement;
-const source = sourceCanvas.getContext("2d");
-
-if (source === null) {
-  throw new Error("problem getting the source context");
-}
-
-const effects = [...randomEffects(3)];
-
-const merger = new MP.Merger(effects, sourceCanvas, gl, {
-  channels: [null, null],
+window.addEventListener("keydown", (e) => {
+  if (e.key === "r") {
+    cancelAnimationFrame(curAnimationFrame);
+    main();
+  }
 });
 
-// add mouse controls
-glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());
-glCanvas.addEventListener("mousemove", (e) => {
-  const rect = glCanvas.getBoundingClientRect();
-  mousePos.x = (H * (e.clientX - rect.left)) / rect.width;
-  mousePos.y = (V * (rect.height - (e.clientY - rect.top))) / rect.height;
-});
+function main() {
+  const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
+  const gl = glCanvas.getContext("webgl2");
 
-// fullscreen listener
-sourceCanvas.addEventListener("click", () => sourceCanvas.requestFullscreen());
+  const mousePos = { x: 0, y: 0 };
 
-let frames = 0;
+  if (gl === null) {
+    throw new Error("problem getting the gl context");
+  }
 
-// TODO randomize the draw funcs, splitting across extra buffers
-const drawFunc = roseDots();
+  const sourceCanvas = document.getElementById("source") as HTMLCanvasElement;
+  const source = sourceCanvas.getContext("2d");
 
-const update = (time: number) => {
-  drawFunc(time / 1000, frames, source, sourceCanvas);
-  merger.draw(time / 1000);
-  requestAnimationFrame(update);
-};
+  if (source === null) {
+    throw new Error("problem getting the source context");
+  }
 
-update(0);
+  const effects = [...randomEffects(3)];
+
+  const merger = new MP.Merger(effects, sourceCanvas, gl, {
+    channels: [null, null],
+  });
+
+  // TODO test that mouse positions are correct
+  // add mouse controls
+  glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());
+  glCanvas.addEventListener("mousemove", (e) => {
+    const rect = glCanvas.getBoundingClientRect();
+    mousePos.x = (H * (e.clientX - rect.left)) / rect.width;
+    mousePos.y = (V * (rect.height - (e.clientY - rect.top))) / rect.height;
+  });
+
+  // fullscreen listener
+  sourceCanvas.addEventListener("click", () =>
+    sourceCanvas.requestFullscreen()
+  );
+
+  let frames = 0;
+
+  // TODO randomize the draw funcs, splitting across extra buffers
+  const drawFunc = roseDots();
+
+  const update = (time: number) => {
+    drawFunc(time / 1000, frames, source, sourceCanvas);
+    console.log("running");
+    merger.draw(time / 1000);
+    curAnimationFrame = requestAnimationFrame(update);
+  };
+
+  update(0);
+}
+
+main();
