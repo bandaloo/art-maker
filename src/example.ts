@@ -1,7 +1,9 @@
 import * as MP from "@bandaloo/merge-pass";
+import { ChanceTable } from "./chancetable";
+import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { H, V } from "./utils";
+import { DrawFunc, H, V } from "./utils";
 
 let curAnimationFrame: number;
 
@@ -29,13 +31,16 @@ function main() {
     throw new Error("problem getting the source context");
   }
 
+  // clear the canvas (we reuse this canvas on reset so it can be dirtied)
+  //source.fillStyle = "white";
+  //source.fillRect(0, 0, H, V);
+
   const effects = [...randomEffects(3)];
 
   const merger = new MP.Merger(effects, sourceCanvas, gl, {
     channels: [null, null],
   });
 
-  // TODO test that mouse positions are correct
   // add mouse controls
   glCanvas.addEventListener("click", () => glCanvas.requestFullscreen());
   glCanvas.addEventListener("mousemove", (e) => {
@@ -52,16 +57,24 @@ function main() {
   let frames = 0;
 
   // TODO randomize the draw funcs, splitting across extra buffers
-  const drawFunc = roseDots();
+  const chanceTable = new ChanceTable<() => DrawFunc>();
+  chanceTable.addAll([
+    [roseDots, 1],
+    [bitGrid, 1],
+  ]);
+  const drawFunc = chanceTable.pick()();
+
+  let originalTime: number | undefined;
 
   const update = (time: number) => {
-    drawFunc(time / 1000, frames, source, sourceCanvas);
-    console.log("running");
-    merger.draw(time / 1000);
+    if (originalTime === undefined) originalTime = time;
+    const t = (time - originalTime) / 1000;
+    drawFunc(t, frames, source, sourceCanvas);
+    merger.draw(t);
     curAnimationFrame = requestAnimationFrame(update);
   };
 
-  update(0);
+  curAnimationFrame = requestAnimationFrame(update);
 }
 
 main();
