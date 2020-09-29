@@ -7,6 +7,7 @@ import {
   changecomp,
   fcolor,
   a1,
+  a2,
   op,
   bloom,
   channel,
@@ -130,6 +131,13 @@ const swirlRand = () => {
   return channel(-1, reverted);
 };
 
+const repeatRand = () => {
+  const h = randInt(6) + 3;
+  const v = randInt(6) + 3;
+  const vec = vec2(h, v);
+  return channel(-1, a2("mod", op(pos(), "*", vec), vec2(1, 1)));
+};
+
 const celShadeRand = () => {
   return celshade(1, 0, 0.2, 0.03);
 };
@@ -147,8 +155,9 @@ chanceTable.addAll([
   [motionBlurRand, 1, -Infinity],
   [bloomRand, 0.25, -Infinity],
   [celShadeRand, 3, -Infinity],
-  [colorDisplacementRand, 1],
-  [swirlRand, 2, -Infinity],
+  [colorDisplacementRand, 3],
+  [swirlRand, 1, -Infinity],
+  [repeatRand, 2, -1],
 ]);
 
 export function randomEffects(num: number): Effect[] {
