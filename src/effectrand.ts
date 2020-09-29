@@ -9,6 +9,9 @@ import {
   a1,
   op,
   bloom,
+  channel,
+  pos,
+  getcomp,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -19,7 +22,7 @@ import {
   vignette,
 } from "postpre";
 import { ChanceTable } from "./chancetable";
-import { Effect, EffectFunc, randBetween } from "./utils";
+import { Effect, EffectFunc, randBetween, randInt } from "./utils";
 
 const kaleidoscopeRand = () => {
   const chanceTable = new ChanceTable<number>();
@@ -77,6 +80,17 @@ const hueRotateRand = () => {
   );
 };
 
+const colorDisplacementRand = () => {
+  const c = "rgb"[randInt(3)];
+  const d = "xy"[randInt(2)];
+  const o = Math.random() > 0.5 ? "+" : "-";
+  const mult = randBetween(0.3, 1.5) / 10;
+  return channel(
+    -1,
+    changecomp(pos(), op(getcomp(fcolor(), c), "*", mult), d, o)
+  );
+};
+
 const celShadeRand = () => {
   return celshade(1, 0, 0.2, 0.03);
 };
@@ -94,6 +108,7 @@ chanceTable.addAll([
   [motionBlurRand, 1, -Infinity],
   [bloomRand, 0.25, -Infinity],
   [celShadeRand, 3, -Infinity],
+  [colorDisplacementRand, 1],
 ]);
 
 export function randomEffects(num: number): Effect[] {
