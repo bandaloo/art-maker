@@ -12,6 +12,12 @@ import {
   channel,
   pos,
   getcomp,
+  vec2,
+  len,
+  rotate,
+  translate,
+  nmouse,
+  Vec2,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -23,6 +29,26 @@ import {
 } from "postpre";
 import { ChanceTable } from "./chancetable";
 import { Effect, EffectFunc, randBetween, randInt } from "./utils";
+
+function randPos() {
+  const chanceTable = new ChanceTable<() => Vec2>();
+  chanceTable.addAll([
+    [() => nmouse(), 3],
+    [() => vec2(0.5, 0.5), 1],
+    [
+      (() => {
+        const freq1 = (1 + randInt(5)) / 3;
+        const freq2 = (1 + randInt(5)) / 3;
+        const s = op(a1("sin", op(time(), "*", freq1)), "*", 0.5);
+        const c = op(a1("cos", op(time(), "*", freq2)), "*", 0.5);
+        return () => vec2(op(s, "+", 0.5), op(c, "+", 0.5));
+      })(),
+      1,
+    ],
+  ]);
+
+  return chanceTable.pick()();
+}
 
 const kaleidoscopeRand = () => {
   const chanceTable = new ChanceTable<number>();
@@ -84,11 +110,24 @@ const colorDisplacementRand = () => {
   const c = "rgb"[randInt(3)];
   const d = "xy"[randInt(2)];
   const o = Math.random() > 0.5 ? "+" : "-";
-  const mult = randBetween(0.3, 1.5) / 10;
+  const mult = randBetween(0.01, 1.5) / 10;
   return channel(
     -1,
     changecomp(pos(), op(getcomp(fcolor(), c), "*", mult), d, o)
   );
+};
+
+const swirlRand = () => {
+  const size = randBetween(1, 120); // inversely proportional
+  const intensity = randBetween(5, 50) * (Math.random() > 0.5 ? 1 : -1);
+  //const vec = vec2(0.5, 0.5);
+  const vec = randPos();
+  const dist = op(len(op(pos(), "-", vec)), "*", size);
+  const angle = op(op(1, "/", op(1, "+", dist)), "*", intensity);
+  const centered = translate(pos(), op(vec, "*", -1));
+  const rot = rotate(centered, angle);
+  const reverted = translate(rot, vec);
+  return channel(-1, reverted);
 };
 
 const celShadeRand = () => {
@@ -109,6 +148,7 @@ chanceTable.addAll([
   [bloomRand, 0.25, -Infinity],
   [celShadeRand, 3, -Infinity],
   [colorDisplacementRand, 1],
+  [swirlRand, 2, -Infinity],
 ]);
 
 export function randomEffects(num: number): Effect[] {

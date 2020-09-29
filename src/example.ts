@@ -18,7 +18,7 @@ function main() {
   const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
   const gl = glCanvas.getContext("webgl2");
 
-  const mousePos = { x: 0, y: 0 };
+  const mousePos = { x: H / 2, y: V / 2 };
 
   if (gl === null) {
     throw new Error("problem getting the gl context");
@@ -70,7 +70,7 @@ function main() {
     if (originalTime === undefined) originalTime = time;
     const t = (time - originalTime) / 1000;
     drawFunc(t, frames, source, sourceCanvas);
-    merger.draw(t);
+    merger.draw(t, mousePos.x, mousePos.y);
     curAnimationFrame = requestAnimationFrame(update);
   };
 
