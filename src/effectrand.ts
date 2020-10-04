@@ -22,6 +22,7 @@ import {
   brightness,
   random,
   pixel,
+  pfloat,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -114,10 +115,14 @@ const colorDisplacementRand = () => {
   const c = "rgb"[randInt(3)];
   const d = "xy"[randInt(2)];
   const o = Math.random() > 0.5 ? "+" : "-";
-  const mult = randBetween(0.01, 1.5) / 10;
+  const mult = pfloat(randBetween(0.01, 1.5) / 10);
+  const inside =
+    Math.random() < 0.5
+      ? mult
+      : op(mult, "*", a1("sin", op(time(), "*", randBetween(0.2, 1.3))));
   return channel(
     -1,
-    changecomp(pos(), op(getcomp(fcolor(), c), "*", mult), d, o)
+    changecomp(pos(), op(getcomp(fcolor(), c), "*", inside), d, o)
   );
 };
 

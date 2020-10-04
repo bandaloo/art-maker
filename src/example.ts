@@ -39,6 +39,7 @@ function main() {
 
   const merger = new MP.Merger(effects, sourceCanvas, gl, {
     channels: [null, null],
+    edgeMode: "wrap"
   });
 
   // add mouse controls
