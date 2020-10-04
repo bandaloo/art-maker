@@ -19,6 +19,9 @@ import {
   translate,
   nmouse,
   Vec2,
+  brightness,
+  random,
+  pixel,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -142,6 +145,13 @@ const celShadeRand = () => {
   return celshade(1, 0, 0.2, 0.03);
 };
 
+const grainRand = () => {
+  const intensity = randBetween(0.1, 0.3) * (Math.random() < 0.5 ? 1 : -1);
+  const position = op(pixel(), "*", 0.3);
+  const inside = Math.random() < 0.5 ? position : op(position, "+", time());
+  return brightness(op(random(inside), "*", intensity));
+};
+
 const chanceTable = new ChanceTable<EffectFunc>();
 
 chanceTable.addAll([
@@ -158,6 +168,7 @@ chanceTable.addAll([
   [colorDisplacementRand, 3],
   [swirlRand, 1, -Infinity],
   [repeatRand, 2, -1],
+  [grainRand, 1, -Infinity],
 ]);
 
 export function randomEffects(num: number): Effect[] {

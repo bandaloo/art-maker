@@ -32,8 +32,8 @@ function main() {
   }
 
   // clear the canvas (we reuse this canvas on reset so it can be dirtied)
-  //source.fillStyle = "white";
-  //source.fillRect(0, 0, H, V);
+  source.fillStyle = "white";
+  source.fillRect(0, 0, H, V);
 
   const effects = [...randomEffects(3)];
 
