@@ -3,9 +3,11 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, H, V } from "./utils";
+import { DrawFunc, getQuery, H, randString, V } from "./utils";
+import seedrandom from "seedrandom";
 
 let curAnimationFrame: number;
+let reset = false;
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "r") {
@@ -14,7 +16,22 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+function updatePath(name: string) {
+  const searchParams = new URLSearchParams(window.location.search);
+  searchParams.set("s", name);
+  const query = window.location.pathname + "?" + searchParams.toString();
+  history.pushState(null, "", query);
+}
+
 function main() {
+  const preset = window.location.search.substring(1);
+  const query = !reset ? getQuery("s", preset) : undefined;
+  const seed = query ?? randString(8);
+  if (seed === undefined) throw new Error("seed was somehow undefined");
+  seedrandom(seed, { global: true });
+  reset = true;
+  updatePath(seed);
+
   const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
   const gl = glCanvas.getContext("webgl2");
 

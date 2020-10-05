@@ -1,4 +1,5 @@
 import { Vec4, EffectLoop } from "@bandaloo/merge-pass";
+import seedrandom from "seedrandom";
 
 // default resolution
 export const H = 1920;
@@ -28,7 +29,7 @@ export type TupleVec3 = [number, number, number];
 export type TupleVec4 = [number, number, number, number];
 export type TupleVec = TupleVec2 | TupleVec3 | TupleVec4;
 
-// utility functions
+// vector functions
 export function mix<T extends TupleVec2>(a: T, b: T, num: number): TupleVec2;
 export function mix<T extends TupleVec3>(a: T, b: T, num: number): TupleVec3;
 export function mix<T extends TupleVec4>(a: T, b: T, num: number): TupleVec4;
@@ -36,10 +37,29 @@ export function mix<T extends TupleVec>(a: T, b: T, num: number): T {
   return a.map((n, i) => n + (b[i] - n) * num) as T;
 }
 
+// random functions
 export function randBetween(lo: number, hi: number) {
   return lo + (hi - lo) * Math.random();
 }
 
 export function randInt(num: number) {
   return Math.floor(Math.random() * num);
+}
+
+export function randString(length: number) {
+  return [...Array(length)]
+    .map(() => "abcdefghijklmnopqrstuvwxyz"[Math.floor(26 * seedrandom()())])
+    .join("");
+}
+
+// browser functions
+export function getQuery(variable: string, query: string) {
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    let pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return undefined;
 }
