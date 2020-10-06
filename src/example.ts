@@ -3,11 +3,15 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, getQuery, H, randString, V } from "./utils";
+import { DrawFunc, getQuery, H, randBetween, randString, V } from "./utils";
 import seedrandom from "seedrandom";
+
+const seedVersion = "0";
 
 let curAnimationFrame: number;
 let reset = false;
+
+let timeScale: number;
 
 const gotIt = document.getElementById("gotit");
 if (gotIt === null) throw new Error("got it button was null");
@@ -48,6 +52,7 @@ window.addEventListener("keydown", (e) => {
 function updatePath(name: string) {
   const searchParams = new URLSearchParams(window.location.search);
   searchParams.set("s", name);
+  searchParams.set("v", seedVersion);
   const query = window.location.pathname + "?" + searchParams.toString();
   history.pushState(null, "", query);
 }
@@ -55,12 +60,20 @@ function updatePath(name: string) {
 function main() {
   const preset = window.location.search.substring(1);
   const query = !reset ? getQuery("s", preset) : undefined;
+  const version = !reset ? getQuery("v", preset) : undefined;
+  if (version !== undefined && version !== seedVersion) {
+    window.alert(
+      "This seed is from a previous version. You won't see same pattern from when you first saved the URL."
+    );
+  }
   const seed = query ?? randString(8);
-  console.log("seed", seed);
+  console.log("seed:", seed);
   if (seed === undefined) throw new Error("seed was somehow undefined");
   seedrandom(seed, { global: true });
   reset = true;
   updatePath(seed);
+
+  timeScale = randBetween(0.4, 1.1);
 
   const glCanvas = document.getElementById("gl") as HTMLCanvasElement;
   const gl = glCanvas.getContext("webgl2");
@@ -116,7 +129,7 @@ function main() {
 
   const update = (time: number) => {
     if (originalTime === undefined) originalTime = time;
-    const t = (time - originalTime) / 1000;
+    const t = ((time - originalTime) / 1000) * timeScale;
     drawFunc(t, frames, source, sourceCanvas);
     merger.draw(t, mousePos.x, mousePos.y);
     curAnimationFrame = requestAnimationFrame(update);
