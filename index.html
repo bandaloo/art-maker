@@ -9,6 +9,36 @@
       html,
       body {
         margin: 0px;
+        font-family: Helvetica, sans-serif;
+      }
+      h1,
+      p {
+        color: white;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      button {
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+      }
+      button:hover {
+        background-color: #ffffff77;
+      }
+      a {
+        color: white;
+      }
+
+      .instructions {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #000000aa;
+        padding: 16px;
+        border: 2px solid white;
+        max-width: 400px;
       }
     </style>
     <meta charset="UTF-8" />
@@ -21,6 +51,28 @@
       height="1080"
       style="display: none"
     ></canvas>
+    <div class="instructions" id="instructions">
+      <h1>art maker</h1>
+      <p>
+        Press 'r' to get a new animation. Click the background for fullscreen.
+        Copy the link to share the seed. Some animations might interactive; try
+        moving your mouse!
+      </p>
+      <p id="info" style="display: none">
+        This was made with the post-processing library
+        <a href="https://www.bandaloo.fun/merge-pass/example.html"
+          >merge-pass</a
+        >
+        and the presets library
+        <a href="https://www.bandaloo.fun/postpre/example.html">postpre</a>.
+        which were also made by me, Cole Granof.
+        <a href="https://twitter.com/whadit">Here's my twitter.</a> You can use
+        the <a href="https://twitter.com/whadit">source code</a> or any imagery
+        from this without attribution.
+      </p>
+      <button id="gotit">Got it</button>
+      <button id="more">More</button>
+    </div>
   </body>
   <script src="bundle.js"></script>
 </html>

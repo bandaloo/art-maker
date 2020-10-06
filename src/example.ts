@@ -9,6 +9,35 @@ import seedrandom from "seedrandom";
 let curAnimationFrame: number;
 let reset = false;
 
+const gotIt = document.getElementById("gotit");
+if (gotIt === null) throw new Error("got it button was null");
+
+const instructions = document.getElementById("instructions");
+if (instructions === null) throw new Error("instructions div was null");
+
+gotIt.addEventListener("click", () => {
+  console.log("clicked");
+  instructions?.remove();
+});
+
+const more = document.getElementById("more");
+if (more === null) throw new Error("more button was null");
+
+const info = document.getElementById("info");
+if (info === null) throw new Error("info div was null");
+
+more.addEventListener("click", () => {
+  console.log("test");
+  if (info.style.display === "none") {
+    more.innerText = "Less";
+    info.style.display = "block";
+  } else {
+    more.innerText = "More";
+    info.style.display = "none";
+    console.log(info.style.display);
+  }
+});
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "r") {
     cancelAnimationFrame(curAnimationFrame);
