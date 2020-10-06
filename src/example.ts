@@ -56,6 +56,7 @@ function main() {
   const preset = window.location.search.substring(1);
   const query = !reset ? getQuery("s", preset) : undefined;
   const seed = query ?? randString(8);
+  console.log("seed", seed);
   if (seed === undefined) throw new Error("seed was somehow undefined");
   seedrandom(seed, { global: true });
   reset = true;

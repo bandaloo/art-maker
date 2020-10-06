@@ -23,6 +23,7 @@ import {
   random,
   pixel,
   pfloat,
+  Float,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -73,9 +74,21 @@ const edgeRand = () => {
 
 const noiseDisplacementRand = () => {
   const period = 0.01 + Math.random() ** 3;
+  const periodExpr =
+    Math.random() < 0.7
+      ? pfloat(period)
+      : op(op(op(getcomp(nmouse(), "x"), "*", 0.5), "+", 0.5), "*", period * 2);
   const intensity = period * (0.1 + 0.2 * Math.random() ** 3);
   const speed = randBetween(-1.5, 1.5);
-  return noisedisplacement(period, speed, intensity);
+  const speedExpr =
+    Math.random() < 0.7
+      ? pfloat(speed)
+      : op(getcomp(nmouse(), "x"), "*", speed * 2);
+  const intensityExpr =
+    Math.random() < 0.7
+      ? pfloat(intensity)
+      : op(getcomp(nmouse(), "x"), "*", intensity * 2);
+  return noisedisplacement(periodExpr, speedExpr, intensityExpr);
 };
 
 const foggyRaysRand = () => {
@@ -116,10 +129,13 @@ const colorDisplacementRand = () => {
   const d = "xy"[randInt(2)];
   const o = Math.random() > 0.5 ? "+" : "-";
   const mult = pfloat(randBetween(0.01, 1.5) / 10);
-  const inside =
-    Math.random() < 0.5
-      ? mult
-      : op(mult, "*", a1("sin", op(time(), "*", randBetween(0.2, 1.3))));
+  const chanceTable = new ChanceTable<Float>();
+  chanceTable.addAll([
+    [mult, 1],
+    [op(mult, "*", a1("sin", op(time(), "*", randBetween(0.2, 1.3)))), 1],
+    [op(mult, "*", getcomp(nmouse(), Math.random() < 0.5 ? "x" : "y")), 1],
+  ]);
+  const inside = chanceTable.pick();
   return channel(
     -1,
     changecomp(pos(), op(getcomp(fcolor(), c), "*", inside), d, o)
@@ -129,7 +145,6 @@ const colorDisplacementRand = () => {
 const swirlRand = () => {
   const size = randBetween(1, 120); // inversely proportional
   const intensity = randBetween(5, 50) * (Math.random() > 0.5 ? 1 : -1);
-  //const vec = vec2(0.5, 0.5);
   const vec = randPos();
   const dist = op(len(op(pos(), "-", vec)), "*", size);
   const angle = op(op(1, "/", op(1, "+", dist)), "*", intensity);
@@ -142,7 +157,13 @@ const swirlRand = () => {
 const repeatRand = () => {
   const h = randInt(6) + 3;
   const v = randInt(6) + 3;
-  const vec = vec2(h, v);
+  const vec =
+    Math.random() < 0.5
+      ? vec2(h, v)
+      : vec2(
+          a1("floor", op(getcomp(nmouse(), "x"), "*", h * 2)),
+          a1("floor", op(getcomp(nmouse(), "y"), "*", v * 2))
+        );
   return channel(-1, a2("mod", op(pos(), "*", vec), vec2(1, 1)));
 };
 
