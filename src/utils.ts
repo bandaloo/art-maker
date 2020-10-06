@@ -63,3 +63,13 @@ export function getQuery(variable: string, query: string) {
   }
   return undefined;
 }
+
+// drawing functions
+export function randBackgroundFunc() {
+  const b = Math.floor(Math.random() * 2) * 255;
+  const background = R(b, b, b);
+  return (x: CanvasRenderingContext2D) => {
+    x.fillStyle = background;
+    x.fillRect(0, 0, H, V);
+  };
+}

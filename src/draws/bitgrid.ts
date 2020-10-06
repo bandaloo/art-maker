@@ -1,5 +1,16 @@
 import { ChanceTable } from "../chancetable";
-import { H, V, S, C, R, DrawFunc, mix, TupleVec3, randBetween } from "../utils";
+import {
+  H,
+  V,
+  S,
+  C,
+  R,
+  DrawFunc,
+  mix,
+  TupleVec3,
+  randBetween,
+  randBackgroundFunc,
+} from "../utils";
 
 type ColorFunc = (i: number, j: number) => number;
 type SizeFunc = (i: number, j: number, t: number) => number;
@@ -11,13 +22,7 @@ export function bitGrid(): DrawFunc {
   const hNum = Math.floor(randBetween(15, 40));
   const vNum = Math.floor(randBetween(15, 40));
 
-  // TODO make this into a utility function
-  const b = Math.floor(Math.random() * 2) * 255;
-  const background = R(b, b, b);
-  const clearBackground = (x: CanvasRenderingContext2D) => {
-    x.fillStyle = background;
-    x.fillRect(0, 0, H, V);
-  };
+  const clearBackground = randBackgroundFunc();
 
   const smooth = Math.random() > 0.2;
 
@@ -59,7 +64,7 @@ export function bitGrid(): DrawFunc {
 
   const sizeFuncTable = new ChanceTable<SizeFunc>();
   sizeFuncTable.addAll([
-    [sinFunc, 3],
+    [sinFunc, 1.5],
     [oneFunc, 1],
   ]);
   const sizeFunc = sizeFuncTable.pick();

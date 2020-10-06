@@ -10,6 +10,7 @@ import {
   TupleVec3,
   randBetween,
   randInt,
+  randBackgroundFunc,
 } from "../utils";
 
 export function roseDots(): DrawFunc {
@@ -17,16 +18,11 @@ export function roseDots(): DrawFunc {
   const r = () => Math.random() * 255;
   const color1: TupleVec3 = [r(), r(), r()];
   const color2: TupleVec3 = [r(), r(), r()];
-  const b = Math.floor(Math.random() * 2) * 255;
-  const background = R(b, b, b);
   const size = 0.5 + Math.random();
   const freq = 0.8 + Math.random();
   const speed = randBetween(0.25, 1.75);
   const num = Math.floor(randBetween(30, 70));
-  const clearBackground = (x: CanvasRenderingContext2D) => {
-    x.fillStyle = background;
-    x.fillRect(0, 0, H, V);
-  };
+  const clearBackground = randBackgroundFunc();
 
   // specific to second drawing pattern
   const lineWidth = randBetween(3, 15);
