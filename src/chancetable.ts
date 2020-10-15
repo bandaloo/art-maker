@@ -1,3 +1,5 @@
+import { Rand } from "./utils";
+
 interface ChanceVals {
   weight: number;
   decr: number;
@@ -5,9 +7,11 @@ interface ChanceVals {
 
 export class ChanceTable<T> {
   info: Map<T, ChanceVals>;
+  rand: Rand;
 
-  constructor(info = new Map()) {
-    this.info = info;
+  constructor(rand: Rand) {
+    this.rand = rand;
+    this.info = new Map();
   }
 
   add(result: T, weight: number, decr = 0) {
@@ -25,7 +29,7 @@ export class ChanceTable<T> {
     for (const chance of map.values()) sum += chance.weight;
 
     // choose a number and count up until that choice
-    let choice = Math.random() * sum;
+    let choice = this.rand.random() * sum;
     let count = 0;
     for (const [result, chance] of map.entries()) {
       if (choice > count && choice < count + chance.weight) {

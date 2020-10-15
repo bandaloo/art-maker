@@ -34,17 +34,17 @@ import {
   vignette,
 } from "postpre";
 import { ChanceTable } from "./chancetable";
-import { Effect, EffectFunc, randBetween, randInt } from "./utils";
+import { Effect, EffectFunc, Rand } from "./utils";
 
-function randPos() {
-  const chanceTable = new ChanceTable<() => Vec2>();
+function randPos(rand: Rand) {
+  const chanceTable = new ChanceTable<() => Vec2>(rand);
   chanceTable.addAll([
     [() => nmouse(), 3],
     [() => vec2(0.5, 0.5), 1],
     [
       (() => {
-        const freq1 = (1 + randInt(5)) / 3;
-        const freq2 = (1 + randInt(5)) / 3;
+        const freq1 = (1 + rand.int(5)) / 3;
+        const freq2 = (1 + rand.int(5)) / 3;
         const s = op(a1("sin", op(time(), "*", freq1)), "*", 0.5);
         const c = op(a1("cos", op(time(), "*", freq2)), "*", 0.5);
         return () => vec2(op(s, "+", 0.5), op(c, "+", 0.5));
@@ -56,8 +56,8 @@ function randPos() {
   return chanceTable.pick()();
 }
 
-const kaleidoscopeRand = () => {
-  const chanceTable = new ChanceTable<number>();
+const kaleidoscopeRand = (rand: Rand) => {
+  const chanceTable = new ChanceTable<number>(rand);
   chanceTable.addAll([
     [4, 2],
     [8, 2],
@@ -68,24 +68,24 @@ const kaleidoscopeRand = () => {
   return kaleidoscope(chanceTable.pick());
 };
 
-const edgeRand = () => {
-  return edge((-1) ** Math.floor(1 + Math.random() * 2));
+const edgeRand = (rand: Rand) => {
+  return edge((-1) ** Math.floor(1 + rand.random() * 2));
 };
 
-const noiseDisplacementRand = () => {
-  const period = 0.01 + Math.random() ** 3;
+const noiseDisplacementRand = (rand: Rand) => {
+  const period = 0.01 + rand.random() ** 3;
   const periodExpr =
-    Math.random() < 0.7
+    rand.random() < 0.7
       ? pfloat(period)
       : op(op(op(getcomp(nmouse(), "x"), "*", 0.5), "+", 0.5), "*", period * 2);
-  const intensity = period * (0.1 + 0.2 * Math.random() ** 3);
-  const speed = randBetween(-1.5, 1.5);
+  const intensity = period * (0.1 + 0.2 * rand.random() ** 3);
+  const speed = rand.between(-1.5, 1.5);
   const speedExpr =
-    Math.random() < 0.7
+    rand.random() < 0.7
       ? pfloat(speed)
       : op(getcomp(nmouse(), "x"), "*", speed * 2);
   const intensityExpr =
-    Math.random() < 0.7
+    rand.random() < 0.7
       ? pfloat(intensity)
       : op(getcomp(nmouse(), "x"), "*", intensity * 2);
   return noisedisplacement(periodExpr, speedExpr, intensityExpr);
@@ -95,45 +95,45 @@ const foggyRaysRand = () => {
   return foggyrays(100, 1, 0.3, 60, -1);
 };
 
-const motionBlurRand = () => {
-  return motionblur(1, randBetween(0.1, 0.4));
+const motionBlurRand = (rand: Rand) => {
+  return motionblur(1, rand.between(0.1, 0.4));
 };
 
-const blurAndTraceRand = () => {
-  return blurandtrace(randBetween(-1, 1));
+const blurAndTraceRand = (rand: Rand) => {
+  return blurandtrace(rand.between(-1, 1));
 };
 
-const bloomRand = () => {
-  const threshold = randBetween(0.3, 0.5);
-  const boost = randBetween(1.2, 1.5);
+const bloomRand = (rand: Rand) => {
+  const threshold = rand.between(0.3, 0.5);
+  const boost = rand.between(1.2, 1.5);
   return bloom(threshold, 1, 1, boost, 0);
 };
 
-const hueRotateRand = () => {
-  const speed = randBetween(0.01, 1) ** 2;
+const hueRotateRand = (rand: Rand) => {
+  const speed = rand.between(0.01, 1) ** 2;
   const timeExpr = op(time(), "*", speed);
   return hsv2rgb(
     changecomp(
       rgb2hsv(fcolor()),
-      Math.random() < 0
+      rand.random() < 0
         ? op(timeExpr, "/", 2)
-        : op(a1("sin", timeExpr), "*", randBetween(0.05, 0.2)),
+        : op(a1("sin", timeExpr), "*", rand.between(0.05, 0.2)),
       "r",
       "+"
     )
   );
 };
 
-const colorDisplacementRand = () => {
-  const c = "rgb"[randInt(3)];
-  const d = "xy"[randInt(2)];
-  const o = Math.random() > 0.5 ? "+" : "-";
-  const mult = pfloat(randBetween(0.01, 1.5) / 10);
-  const chanceTable = new ChanceTable<Float>();
+const colorDisplacementRand = (rand: Rand) => {
+  const c = "rgb"[rand.int(3)];
+  const d = "xy"[rand.int(2)];
+  const o = rand.random() > 0.5 ? "+" : "-";
+  const mult = pfloat(rand.between(0.01, 1.5) / 10);
+  const chanceTable = new ChanceTable<Float>(rand);
   chanceTable.addAll([
     [mult, 1],
-    [op(mult, "*", a1("sin", op(time(), "*", randBetween(0.2, 1.3)))), 1],
-    [op(mult, "*", getcomp(nmouse(), Math.random() < 0.5 ? "x" : "y")), 1],
+    [op(mult, "*", a1("sin", op(time(), "*", rand.between(0.2, 1.3)))), 1],
+    [op(mult, "*", getcomp(nmouse(), rand.random() < 0.5 ? "x" : "y")), 1],
   ]);
   const inside = chanceTable.pick();
   return channel(
@@ -142,10 +142,10 @@ const colorDisplacementRand = () => {
   );
 };
 
-const swirlRand = () => {
-  const size = randBetween(1, 120); // inversely proportional
-  const intensity = randBetween(5, 50) * (Math.random() > 0.5 ? 1 : -1);
-  const vec = randPos();
+const swirlRand = (rand: Rand) => {
+  const size = rand.between(1, 120); // inversely proportional
+  const intensity = rand.between(5, 50) * (rand.random() > 0.5 ? 1 : -1);
+  const vec = randPos(rand);
   const dist = op(len(op(pos(), "-", vec)), "*", size);
   const angle = op(op(1, "/", op(1, "+", dist)), "*", intensity);
   const centered = translate(pos(), op(vec, "*", -1));
@@ -154,11 +154,11 @@ const swirlRand = () => {
   return channel(-1, reverted);
 };
 
-const repeatRand = () => {
-  const h = randInt(6) + 3;
-  const v = randInt(6) + 3;
+const repeatRand = (rand: Rand) => {
+  const h = rand.int(6) + 3;
+  const v = rand.int(6) + 3;
   const vec =
-    Math.random() < 0.5
+    rand.random() < 0.5
       ? vec2(h, v)
       : vec2(
           a1("floor", op(getcomp(nmouse(), "x"), "*", h * 2)),
@@ -171,32 +171,36 @@ const celShadeRand = () => {
   return celshade(1, 0, 0.2, 0.03);
 };
 
-const grainRand = () => {
-  const intensity = randBetween(0.1, 0.3) * (Math.random() < 0.5 ? 1 : -1);
+const grainRand = (rand: Rand) => {
+  const intensity = rand.between(0.1, 0.3) * (rand.random() < 0.5 ? 1 : -1);
   const position = op(pixel(), "*", 0.3);
-  const inside = Math.random() < 0.5 ? position : op(position, "+", time());
+  const inside = rand.random() < 0.5 ? position : op(position, "+", time());
   return brightness(op(random(inside), "*", intensity));
 };
 
-const chanceTable = new ChanceTable<EffectFunc>();
+const vignetteRand = (rand: Rand) => {
+  return vignette();
+};
 
-chanceTable.addAll([
-  [kaleidoscopeRand, 2, -Infinity],
-  [noiseDisplacementRand, 3, -1],
-  [edgeRand, 1],
-  [blurAndTraceRand, 0.5, -0.25],
-  [vignette, 0.5],
-  [hueRotateRand, 1, -Infinity],
-  [foggyRaysRand, 3, -Infinity],
-  [motionBlurRand, 1, -Infinity],
-  [bloomRand, 0.25, -Infinity],
-  [celShadeRand, 3, -Infinity],
-  [colorDisplacementRand, 3],
-  [swirlRand, 1, -Infinity],
-  [repeatRand, 2, -1],
-  [grainRand, 1, -Infinity],
-]);
+export function randomEffects(num: number, rand: Rand): Effect[] {
+  const chanceTable = new ChanceTable<EffectFunc>(rand);
 
-export function randomEffects(num: number): Effect[] {
-  return chanceTable.pick(num).map((n) => n());
+  chanceTable.addAll([
+    [kaleidoscopeRand, 2, -Infinity],
+    [noiseDisplacementRand, 3, -1],
+    [edgeRand, 1],
+    [blurAndTraceRand, 0.5, -0.25],
+    [vignetteRand, 0.5],
+    [hueRotateRand, 1, -Infinity],
+    [foggyRaysRand, 3, -Infinity],
+    [motionBlurRand, 1, -Infinity],
+    [bloomRand, 0.25, -Infinity],
+    [celShadeRand, 3, -Infinity],
+    [colorDisplacementRand, 3],
+    [swirlRand, 1, -Infinity],
+    [repeatRand, 2, -1],
+    [grainRand, 1, -Infinity],
+  ]);
+
+  return chanceTable.pick(num).map((n) => n(rand));
 }

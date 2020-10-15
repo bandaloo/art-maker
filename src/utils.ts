@@ -16,13 +16,13 @@ export const R = (r?: any, g?: any, b?: any, a: any = 1) =>
 // types
 export type DrawFunc = (
   t: number,
-  fr: number,
+  fr: number, // TODO get rid of this
   x: CanvasRenderingContext2D,
   c: HTMLCanvasElement
 ) => void;
 
 export type Effect = Vec4 | EffectLoop;
-export type EffectFunc = () => Effect;
+export type EffectFunc = (rand: Rand) => Effect;
 
 export type TupleVec2 = [number, number];
 export type TupleVec3 = [number, number, number];
@@ -37,19 +37,30 @@ export function mix<T extends TupleVec>(a: T, b: T, num: number): T {
   return a.map((n, i) => n + (b[i] - n) * num) as T;
 }
 
-// random functions
-export function randBetween(lo: number, hi: number) {
-  return lo + (hi - lo) * Math.random();
-}
-
-export function randInt(num: number) {
-  return Math.floor(Math.random() * num);
-}
-
 export function randString(length: number) {
   return [...Array(length)]
-    .map(() => "abcdefghijklmnopqrstuvwxyz"[Math.floor(26 * seedrandom()())])
+    .map(() => "abcdefghijklmnopqrstuvwxyz"[Math.floor(26 * Math.random())])
     .join("");
+}
+
+export class Rand {
+  private rand: seedrandom.prng;
+
+  constructor(seed?: string) {
+    this.rand = seedrandom(seed ?? randString(8));
+  }
+
+  between(lo: number, hi: number) {
+    return lo + (hi - lo) * this.rand();
+  }
+
+  int(num: number) {
+    return Math.floor(this.rand() * num);
+  }
+
+  random() {
+    return this.rand();
+  }
 }
 
 // browser functions
@@ -65,8 +76,8 @@ export function getQuery(variable: string, query: string) {
 }
 
 // drawing functions
-export function randBackgroundFunc() {
-  const b = Math.floor(Math.random() * 2) * 255;
+export function randBackgroundFunc(rand: Rand) {
+  const b = Math.floor(rand.random() * 2) * 255;
   const background = R(b, b, b);
   return (x: CanvasRenderingContext2D) => {
     x.fillStyle = background;

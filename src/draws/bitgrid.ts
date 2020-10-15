@@ -8,40 +8,40 @@ import {
   DrawFunc,
   mix,
   TupleVec3,
-  randBetween,
   randBackgroundFunc,
+  Rand,
 } from "../utils";
 
 type ColorFunc = (i: number, j: number) => number;
 type SizeFunc = (i: number, j: number, t: number) => number;
 
-export function bitGrid(): DrawFunc {
-  const r = () => Math.random() * 255;
+export function bitGrid(rand: Rand): DrawFunc {
+  const r = () => rand.random() * 255;
   const color1: TupleVec3 = [r(), r(), r()];
   const color2: TupleVec3 = [r(), r(), r()];
-  const hNum = Math.floor(randBetween(15, 40));
-  const vNum = Math.floor(randBetween(15, 40));
+  const hNum = Math.floor(rand.between(15, 40));
+  const vNum = Math.floor(rand.between(15, 40));
 
-  const clearBackground = randBackgroundFunc();
+  const clearBackground = randBackgroundFunc(rand);
 
-  const smooth = Math.random() > 0.2;
+  const smooth = rand.random() > 0.2;
 
   const xorFunc = (() => {
-    const div = randBetween(10, 50);
-    const m = randBetween(1, 2);
+    const div = rand.between(10, 50);
+    const m = rand.between(1, 2);
     return (i: number, j: number) => ((i ^ j) / div) % m;
   })();
   const andFunc = (() => {
-    const div = randBetween(1, 4);
+    const div = rand.between(1, 4);
     return (i: number, j: number) => (i & j) / div;
   })();
   const plusMinusXorFunc = (() => {
-    const div = randBetween(3, 12);
-    const m = Math.floor(randBetween(1, 6));
+    const div = rand.between(3, 12);
+    const m = Math.floor(rand.between(1, 6));
     return (i: number, j: number) => (((i - j) ^ (j + i)) / div) % m;
   })();
 
-  const colorFuncTable = new ChanceTable<ColorFunc>();
+  const colorFuncTable = new ChanceTable<ColorFunc>(rand);
   colorFuncTable.addAll([
     [xorFunc, 1],
     [andFunc, 2],
@@ -50,19 +50,19 @@ export function bitGrid(): DrawFunc {
   const colorFunc = colorFuncTable.pick();
 
   const sinFunc = (() => {
-    const xAmp = randBetween(0.3, 1.5);
-    const yAmp = randBetween(0.3, 1.5);
-    const xSpeed = randBetween(0.3, 2);
-    const ySpeed = randBetween(0.3, 2);
-    const xFreq = randBetween(1, 9);
-    const yFreq = randBetween(1, 9);
+    const xAmp = rand.between(0.3, 1.5);
+    const yAmp = rand.between(0.3, 1.5);
+    const xSpeed = rand.between(0.3, 2);
+    const ySpeed = rand.between(0.3, 2);
+    const xFreq = rand.between(1, 9);
+    const yFreq = rand.between(1, 9);
     return (i: number, j: number, t: number) =>
       xAmp * Math.sin(xSpeed * t + xFreq * i) +
       yAmp * Math.cos(ySpeed + t + yFreq * j);
   })();
   const oneFunc = () => 1;
 
-  const sizeFuncTable = new ChanceTable<SizeFunc>();
+  const sizeFuncTable = new ChanceTable<SizeFunc>(rand);
   sizeFuncTable.addAll([
     [sinFunc, 1.5],
     [oneFunc, 1],
@@ -72,8 +72,8 @@ export function bitGrid(): DrawFunc {
   const hSize = H / hNum;
   const vSize = V / vNum;
 
-  const speed = Math.random() < 0.05 ? 0 : 0.25 + Math.random() * 9;
-  const up = Math.random() < 0.5;
+  const speed = rand.random() < 0.05 ? 0 : 0.25 + rand.random() * 9;
+  const up = rand.random() < 0.5;
   const iSpeed = !up ? speed : 0;
   const jSpeed = up ? speed : 0;
 

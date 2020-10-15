@@ -8,28 +8,27 @@ import {
   DrawFunc,
   mix,
   TupleVec3,
-  randBetween,
-  randInt,
   randBackgroundFunc,
+  Rand,
 } from "../utils";
 
-export function roseDots(): DrawFunc {
+export function roseDots(rand: Rand): DrawFunc {
   // common attributes
-  const r = () => Math.random() * 255;
+  const r = () => rand.random() * 255;
   const color1: TupleVec3 = [r(), r(), r()];
   const color2: TupleVec3 = [r(), r(), r()];
-  const size = 0.5 + Math.random();
-  const freq = 0.8 + Math.random();
-  const speed = randBetween(0.25, 1.75);
-  const num = Math.floor(randBetween(30, 70));
-  const clearBackground = randBackgroundFunc();
+  const size = 0.5 + rand.random();
+  const freq = 0.8 + rand.random();
+  const speed = rand.between(0.25, 1.75);
+  const num = Math.floor(rand.between(30, 70));
+  const clearBackground = randBackgroundFunc(rand);
 
   // specific to second drawing pattern
-  const lineWidth = randBetween(3, 15);
-  const segments = [15 + randInt(20), randInt(20), randInt(20)];
-  const copies = randInt(15) + 2;
-  const spacing = randBetween(100, 500);
-  const chanceTable = new ChanceTable<(i: number, t: number) => number>();
+  const lineWidth = rand.between(3, 15);
+  const segments = [15 + rand.int(20), rand.int(20), rand.int(20)];
+  const copies = rand.int(15) + 2;
+  const spacing = rand.between(100, 500);
+  const chanceTable = new ChanceTable<(i: number, t: number) => number>(rand);
   chanceTable.addAll([
     [(i: number, t: number) => Math.tan(freq2 * t + freq3 * i), 1],
     [(i: number, t: number) => Math.sin(freq2 * t + freq3 * i), 1],
@@ -37,10 +36,10 @@ export function roseDots(): DrawFunc {
     [(i: number, t: number) => speed * i * t, 1],
   ]);
   const posFunc = chanceTable.pick();
-  const freq2 = randBetween(0.2, 2);
-  const freq3 = randBetween(0.2, 2);
+  const freq2 = rand.between(0.2, 2);
+  const freq3 = rand.between(0.2, 2);
 
-  return Math.random() < 0.5
+  return rand.random() < 0.5
     ? (
         t: number,
         fr: number,
