@@ -1,13 +1,7 @@
 import { ArtMaker } from "./artmaker";
 import { getQuery, randString } from "./utils";
 
-const seedVersion = "0";
-
-let curAnimationFrame: number;
 let reset = false;
-
-let timeScale: number;
-
 let artMaker: ArtMaker;
 
 const gotIt = document.getElementById("gotit");
@@ -40,15 +34,13 @@ more.addEventListener("click", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "r") {
-    main();
-  }
+  if (e.key === "r") main();
 });
 
 function updatePath(name: string) {
   const searchParams = new URLSearchParams(window.location.search);
   searchParams.set("s", name);
-  searchParams.set("v", seedVersion);
+  searchParams.set("v", ArtMaker.seedVersion);
   const query = window.location.pathname + "?" + searchParams.toString();
   history.pushState(null, "", query);
 }

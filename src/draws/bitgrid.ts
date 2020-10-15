@@ -77,6 +77,10 @@ export function bitGrid(rand: Rand): DrawFunc {
   const iSpeed = !up ? speed : 0;
   const jSpeed = up ? speed : 0;
 
+  const overscan = sizeFunc !== oneFunc ? 2 : 0;
+  const overscanX = iSpeed !== 0 ? overscan : 0;
+  const overscanY = jSpeed !== 0 ? overscan : 0;
+
   return (
     t: number,
     fr: number,
@@ -84,10 +88,10 @@ export function bitGrid(rand: Rand): DrawFunc {
     c: HTMLCanvasElement
   ) => {
     clearBackground(x);
-    for (let i = 0; i < hNum + 1; i++) {
+    for (let i = 0 - overscanX; i < hNum + 1 + overscanX; i++) {
       const ri = Math.floor(i + t * iSpeed);
       const iOffset = smooth ? (t * iSpeed) % 1 : 0;
-      for (let j = 0; j < vNum + 1; j++) {
+      for (let j = 0 - overscanY; j < vNum + 1 + overscanY; j++) {
         const rj = Math.floor(j + t * jSpeed);
         const jOffset = smooth ? (t * jSpeed) % 1 : 0;
         const size = sizeFunc(ri, rj, t);
