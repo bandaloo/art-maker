@@ -69,7 +69,12 @@ function main() {
   console.log("seed:", seed);
 
   if (seed === undefined) throw new Error("seed was somehow undefined");
-  if (!reset) artMaker = new ArtMaker();
+  if (!reset) {
+    artMaker = new ArtMaker();
+    artMaker.glCanvas.addEventListener("click", () =>
+      artMaker.glCanvas.requestFullscreen()
+    );
+  }
 
   reset = true;
   updatePath(seed);

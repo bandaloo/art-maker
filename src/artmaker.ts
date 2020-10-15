@@ -50,9 +50,6 @@ export class ArtMaker {
     [this.glCanvas, this.gl] = canvasAndContext(width, height, "webgl2");
     [this.sourceCanvas, this.source] = canvasAndContext(width, height, "2d");
 
-    this.glCanvas.addEventListener("click", () =>
-      this.glCanvas.requestFullscreen()
-    );
     this.glCanvas.addEventListener("mousemove", (e) => {
       const rect = this.glCanvas.getBoundingClientRect();
       this.mousePos.x = (width * (e.clientX - rect.left)) / rect.width;
