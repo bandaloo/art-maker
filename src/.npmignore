@@ -1,0 +1,5 @@
+dist/example.*
+index.html
+bundle.js
+src
+docs
