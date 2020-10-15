@@ -44,7 +44,7 @@ export class ArtMaker {
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
 
-  constructor(width = H, height = V, id = "art") {
+  constructor(width = H, height = Math.floor((width * 9) / 16), id = "art") {
     this.mousePos = { x: width / 2, y: height / 2 };
     [this.glCanvas, this.gl] = canvasAndContext(width, height, "webgl2");
     [this.sourceCanvas, this.source] = canvasAndContext(width, height, "2d");
@@ -69,6 +69,11 @@ export class ArtMaker {
   art(seed?: string) {
     this.source.restore();
     this.source.save();
+
+    this.source.scale(
+      this.sourceCanvas.width / H,
+      this.sourceCanvas.height / V
+    );
 
     if (this.curAnimationFrame !== undefined) {
       cancelAnimationFrame(this.curAnimationFrame);

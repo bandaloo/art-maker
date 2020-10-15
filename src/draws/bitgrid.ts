@@ -2,8 +2,6 @@ import { ChanceTable } from "../chancetable";
 import {
   H,
   V,
-  S,
-  C,
   R,
   DrawFunc,
   mix,
