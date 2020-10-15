@@ -34,7 +34,8 @@ import {
   vignette,
 } from "postpre";
 import { ChanceTable } from "./chancetable";
-import { Effect, EffectFunc, Rand } from "./utils";
+import { Effect, EffectFunc } from "./utils";
+import { Rand } from "./rand";
 
 function randPos(rand: Rand) {
   const chanceTable = new ChanceTable<() => Vec2>(rand);

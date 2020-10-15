@@ -3,7 +3,8 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, H, Rand, V } from "./utils";
+import { DrawFunc, H, V } from "./utils";
+import { Rand } from "./rand";
 
 type CanvasPair<T> = [HTMLCanvasElement, T];
 

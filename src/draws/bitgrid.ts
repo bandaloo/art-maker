@@ -7,8 +7,8 @@ import {
   mix,
   TupleVec3,
   randBackgroundFunc,
-  Rand,
 } from "../utils";
+import { Rand } from "../rand";
 
 type ColorFunc = (i: number, j: number) => number;
 type SizeFunc = (i: number, j: number, t: number) => number;

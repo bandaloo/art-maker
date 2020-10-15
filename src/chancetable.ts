@@ -1,4 +1,4 @@
-import { Rand } from "./utils";
+import { Rand } from "./rand";
 
 interface ChanceVals {
   weight: number;

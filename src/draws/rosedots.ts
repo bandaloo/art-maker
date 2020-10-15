@@ -9,8 +9,8 @@ import {
   mix,
   TupleVec3,
   randBackgroundFunc,
-  Rand,
 } from "../utils";
+import { Rand } from "../rand";
 
 export function roseDots(rand: Rand): DrawFunc {
   // common attributes

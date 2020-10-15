@@ -1,5 +1,5 @@
 import { Vec4, EffectLoop } from "@bandaloo/merge-pass";
-import seedrandom from "seedrandom";
+import { Rand } from "./rand";
 
 // default resolution
 export const H = 1920;
@@ -35,44 +35,6 @@ export function mix<T extends TupleVec3>(a: T, b: T, num: number): TupleVec3;
 export function mix<T extends TupleVec4>(a: T, b: T, num: number): TupleVec4;
 export function mix<T extends TupleVec>(a: T, b: T, num: number): T {
   return a.map((n, i) => n + (b[i] - n) * num) as T;
-}
-
-export function randString(length: number) {
-  return [...Array(length)]
-    .map(() => "abcdefghijklmnopqrstuvwxyz"[Math.floor(26 * Math.random())])
-    .join("");
-}
-
-export class Rand {
-  private rand: seedrandom.prng;
-
-  constructor(seed?: string) {
-    this.rand = seedrandom(seed ?? randString(8));
-  }
-
-  between(lo: number, hi: number) {
-    return lo + (hi - lo) * this.rand();
-  }
-
-  int(num: number) {
-    return Math.floor(this.rand() * num);
-  }
-
-  random() {
-    return this.rand();
-  }
-}
-
-// browser functions
-export function getQuery(variable: string, query: string) {
-  const vars = query.split("&");
-  for (let i = 0; i < vars.length; i++) {
-    let pair = vars[i].split("=");
-    if (pair[0] == variable) {
-      return pair[1];
-    }
-  }
-  return undefined;
 }
 
 // drawing functions

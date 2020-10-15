@@ -1,5 +1,16 @@
-import { ArtMaker } from "./artmaker";
-import { getQuery, randString } from "./utils";
+import ArtMaker, { Rand } from "./index";
+
+// browser functions
+export function getQuery(variable: string, query: string) {
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    let pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return undefined;
+}
 
 let reset = false;
 let artMaker: ArtMaker;
@@ -54,7 +65,7 @@ function main() {
       "This seed is from a previous version. You won't see same pattern from when you first saved the URL."
     );
   }
-  const seed = query ?? randString(8);
+  const seed = query ?? Rand.randString(8);
   console.log("seed:", seed);
 
   if (seed === undefined) throw new Error("seed was somehow undefined");
