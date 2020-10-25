@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>art maker script tag</title>
+    <style>
+      /* the default id for artmaker canvas automatically added to DOM */
+      #artcanvas {
+        width: 100%;
+      }
+    </style>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    a simple example of how to use artmaker.js as a script
+    <br />
+    <button onclick="artMaker.art()">randomize</button>
+    <button onclick="artMaker.art('foo')">set seed "foo"</button>
+    <!-- this is the default id of the div that artmaker adds the canvas to -->
+    <div id="art"></div>
+  </body>
+  <script src="artmaker.min.js"></script>
+  <script>
+    // create a new artmaker with given width
+    // height is chosen to preserve 16:9 aspect ratio
+    const artMaker = new ArtMaker(960);
+    // start the animation
+    artMaker.art();
+  </script>
+</html>

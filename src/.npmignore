@@ -1,5 +1,6 @@
 dist/example.*
+dist/min.*
 index.html
-bundle.js
+*.js
 src
 docs

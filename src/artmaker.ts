@@ -45,10 +45,25 @@ export class ArtMaker {
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
 
-  constructor(width = H, height = Math.floor((width * 9) / 16), id = "art") {
+  /**
+   * constructs an ArtMaker
+   * @param width width of the canvas (defaults to 1920)
+   * @param height height of the canvas (defaults to number that preserves 16:9
+   * aspect ratio based on width)
+   * @param divId id of the div to add the canvas to (defaults to "art")
+   * @param canvasId id of the canvas automatically added to the DOM (defaults
+   * to "artcanvas")
+   */
+  constructor(
+    width = H,
+    height = Math.floor((width * 9) / 16),
+    divId = "art",
+    canvasId = "artcanvas"
+  ) {
     this.mousePos = { x: width / 2, y: height / 2 };
     [this.glCanvas, this.gl] = canvasAndContext(width, height, "webgl2");
     [this.sourceCanvas, this.source] = canvasAndContext(width, height, "2d");
+    this.glCanvas.id = canvasId;
 
     this.glCanvas.addEventListener("mousemove", (e) => {
       const rect = this.glCanvas.getBoundingClientRect();
@@ -57,13 +72,18 @@ export class ArtMaker {
         (height * (rect.height - (e.clientY - rect.top))) / rect.height;
     });
 
-    const elem = document.getElementById(id);
+    const elem = document.getElementById(divId);
     if (elem === null) {
-      throw new Error(`could not find element with id "${id}"`);
+      throw new Error(`could not find element with id "${divId}"`);
     }
     elem.appendChild(this.glCanvas);
   }
 
+  /**
+   * start running the art animation
+   * @param seed how to seed the random generation (pass in no arguments for
+   * random seed)
+   */
   art(seed?: string) {
     this.source.restore();
     this.source.save();

@@ -1,5 +1,5 @@
 {
-  "name": "art-maker",
+  "name": "artmaker",
   "version": "0.1.1",
   "description": "art generator that uses the 2D canvas and shaders",
   "main": "dist/index.js",
@@ -8,12 +8,14 @@
     "build": "npx tsc --outDir dist",
     "bundle": "npx browserify dist/example.js -o bundle.js",
     "buildwatch": "npx tsc -w --outDir dist",
-    "bundlewatch": "npx watchify dist/example.js -o bundle.js"
+    "bundlewatch": "npx watchify dist/example.js -o bundle.js",
+    "minify": "npm run build && npx browserify dist/min.js -o artmaker.js && terser --compress --mangle -o artmaker.min.js -- artmaker.js"
   },
   "author": "Cole Granof",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^16.5.2",
+    "terser": "^5.3.8",
     "typescript": "^4.0.3",
     "watchify": "^3.11.1"
   },
