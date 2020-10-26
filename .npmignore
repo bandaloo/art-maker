@@ -1,0 +1,8 @@
+dist/example.*
+dist/min.*
+*.html
+src
+artmaker.js
+artmaker.min.js
+bundle.js
+tsconfig.json
