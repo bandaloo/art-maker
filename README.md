@@ -82,7 +82,18 @@ link from the [live demo](https://www.bandaloo.fun/art-maker) and try to
 visit it again after the algorithm has been updated, you'll be notified with
 an alert.
 
-# some thoughts and acknowledgements
+# developing
+
+`npm run build` will compile all the TypeScript into JavaScript and put it in
+`dist`. `npm run bundle` will bundle `example.ts` to create `bundle.js` which
+is used in `index.html`, which is the live example. To run this, you actually
+don't need a local server; you should be able to just open `index.html` with
+Chrome or Firefox directly. There are watch versions of these scripts:
+`npm run buildwatch` and `npm run bundlewatch`. To create the browser
+versions `artmaker.js` and `artmaker.min.js`, run `npm run minify`. These are
+the files included as the release.
+
+# final words
 
 If you play with this library and find that you want some greater control
 over the output for practical purposes, maybe locked/unlocked framerate and
@@ -94,4 +105,6 @@ Smith. It also makes use two other libraries I wrote,
 [merge-pass](https://www.bandaloo.fun/merge-pass/example.html) and
 [postpre](https://www.bandaloo.fun/postpre/example.html) which were
 originally created to add post-processing effects to Charlie Robert's
-[marching.js](https://charlieroberts.github.io/marching/playground/).
+[marching.js](https://charlieroberts.github.io/marching/playground/). I
+wouldn't have had the opportunity to create such a project without their
+guidance.
