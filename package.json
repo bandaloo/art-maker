@@ -9,7 +9,7 @@
     "bundle": "npx browserify dist/example.js -o bundle.js",
     "buildwatch": "npx tsc -w --outDir dist",
     "bundlewatch": "npx watchify dist/example.js -o bundle.js",
-    "minify": "VERSION=`node -p \"require('./package.json').version\"` && npm run build && npx browserify dist/min.js -o artmaker.js && echo \"/* artmaker $VERSION | (c) 2020, Cole Granof | MIT License */\" > artmaker.min.js && npx terser --compress --mangle -- artmaker.js >> artmaker.min.js"
+    "minify": "VERSION=`node -p \"require('./package.json').version\"` && PREAMBLE=\"echo '/* artmaker ${VERSION} | (c) 2020, Cole Granof | MIT License */'\" && npm run build && eval $PREAMBLE > artmaker.js && eval $PREAMBLE > artmaker.min.js && npx browserify dist/min.js >> artmaker.js && npx terser --compress --mangle -- artmaker.js >> artmaker.min.js"
   },
   "author": "Cole Granof",
   "license": "MIT",
