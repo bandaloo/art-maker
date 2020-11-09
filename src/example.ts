@@ -20,6 +20,7 @@ if (gotIt === null) throw new Error("got it button was null");
 
 const instructions = document.getElementById("instructions");
 if (instructions === null) throw new Error("instructions div was null");
+instructions.style.visibility = "visible";
 
 gotIt.addEventListener("click", () => {
   console.log("clicked");
@@ -33,7 +34,6 @@ const info = document.getElementById("info");
 if (info === null) throw new Error("info div was null");
 
 more.addEventListener("click", () => {
-  console.log("test");
   if (info.style.display === "none") {
     more.innerText = "Less";
     info.style.display = "block";
@@ -46,6 +46,7 @@ more.addEventListener("click", () => {
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "r") main();
+  else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
 });
 
 function updatePath(name: string) {
@@ -69,12 +70,7 @@ function main() {
   console.log("seed:", seed);
 
   if (seed === undefined) throw new Error("seed was somehow undefined");
-  if (!reset) {
-    artMaker = new ArtMaker();
-    artMaker.glCanvas.addEventListener("click", () =>
-      artMaker.glCanvas.requestFullscreen()
-    );
-  }
+  if (!reset) artMaker = new ArtMaker();
 
   reset = true;
   updatePath(seed);

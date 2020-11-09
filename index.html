@@ -23,6 +23,7 @@
         background-color: transparent;
         color: white;
         border: 2px solid white;
+        pointer-events: all;
       }
       button:hover {
         background-color: #ffffff77;
@@ -32,41 +33,50 @@
       }
 
       .instructions {
-        position: fixed;
+        position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         background: #000000aa;
         padding: 16px;
         border: 2px solid white;
-        max-width: 400px;
+        width: 400px;
+        pointer-events: none;
+        visibility: hidden;
+      }
+
+      #art {
+        position: relative;
+        min-height: 200px;
       }
     </style>
     <meta charset="UTF-8" />
   </head>
   <body>
-    <div id="art"></div>
-    <div class="instructions" id="instructions">
-      <h1>art maker</h1>
-      <p>
-        Press 'r' to get a new animation. Click the background for fullscreen.
-        Copy the link to share the seed. Some animations might interactive; try
-        moving your mouse!
-      </p>
-      <p id="info" style="display: none">
-        This was made with the post-processing library
-        <a href="https://www.bandaloo.fun/merge-pass/example.html"
-          >merge-pass</a
-        >
-        and the presets library
-        <a href="https://www.bandaloo.fun/postpre/example.html">postpre</a>
-        which were also made by me, Cole Granof.
-        <a href="https://twitter.com/whadit">Here's my twitter.</a> You can use
-        the <a href="https://github.com/bandaloo/art-maker">source code</a> or
-        any imagery from this without attribution.
-      </p>
-      <button id="gotit">Got it</button>
-      <button id="more">More</button>
+    <div id="art">
+      <div class="instructions" id="instructions">
+        <h1>art maker</h1>
+        <p>
+          Press 'r' to get a new animation and 'f' for fullscreen. Copy the link
+          to share the seed. Some animations might interactive; try moving your
+          mouse!
+        </p>
+        <p id="info" style="display: none">
+          This was made with the post-processing library
+          <a href="https://www.bandaloo.fun/merge-pass/example.html"
+            >merge-pass</a
+          >
+          and the presets library
+          <a href="https://www.bandaloo.fun/postpre/example.html">postpre</a>
+          which were also made by me, Cole Granof.
+          <a href="https://twitter.com/whadit">Here's my twitter.</a> You can
+          use the
+          <a href="https://github.com/bandaloo/art-maker">source code</a> or any
+          imagery from this without attribution.
+        </p>
+        <button id="gotit">Got it</button>
+        <button id="more">More</button>
+      </div>
     </div>
   </body>
   <script src="bundle.js"></script>
