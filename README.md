@@ -1,6 +1,6 @@
 # artmaker
 
-Maybe you want a wobbly Earthbound-style background for your HTML5 gamejam
+Maybe you want a wobbly Earthbound-style background for your HTML5 game jam
 game without much effort, or perhaps you just want a cool visual for your
 website. Either way, artmaker can help. Recently, I used it to add some style
 to this game prototype you can play in the browser
@@ -40,7 +40,7 @@ You can add the canvas to the DOM and animate it with this:
 
 ```javascript
 const artMaker = new ArtMaker();
-artMaker.art();
+artMaker.animate();
 ```
 
 This will add a canvas to the div with the id `"art"`:
@@ -70,10 +70,20 @@ const artMaker = new ArtMaker(1920, 1080, "art", "artcanvas");
 ```
 
 If you want to get the same pattern, you can seed the random generation by
-passing in a string to `art`:
+calling `seed` before `animate`. If you want to change the seed
+mid-animation, just call `seed` again. Calling it with no arguments will
+choose a random seed. They can be chained:
 
 ```javascript
-artMaker.art("foo");
+artMaker.seed("foo").animate();
+```
+
+If you have your own game loop, you don't have to call `animate`, and can just
+call `draw` in your game loop, passing in the current time in milliseconds:
+
+```javascript
+// assuming your game is locked at 60
+artMaker.draw(ticks * 60 * 1000);
 ```
 
 Note that before 1.0, the generative algorithm might change, thus breaking

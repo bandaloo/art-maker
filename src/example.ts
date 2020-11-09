@@ -1,6 +1,5 @@
 import ArtMaker, { Rand } from "./index";
 
-// browser functions
 export function getQuery(variable: string, query: string) {
   const vars = query.split("&");
   for (let i = 0; i < vars.length; i++) {
@@ -63,7 +62,8 @@ function main() {
   const version = !reset ? getQuery("v", preset) : undefined;
   if (version !== undefined && version !== ArtMaker.seedVersion) {
     window.alert(
-      "This seed is from a previous version. You won't see same pattern from when you first saved the URL."
+      "This seed is from a previous version. " +
+        "You won't see same pattern from when you first saved the URL."
     );
   }
   const seed = query ?? Rand.randString(8);
@@ -74,7 +74,8 @@ function main() {
 
   reset = true;
   updatePath(seed);
-  artMaker.art(seed);
+  artMaker.seed(seed);
+  artMaker.animate();
 }
 
 main();

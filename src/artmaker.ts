@@ -38,6 +38,8 @@ export class ArtMaker {
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;
+  private merger?: Merger;
+  private drawFunc?: DrawFunc;
   private rand?: Rand;
   private mousePos: { x: number; y: number };
   readonly glCanvas: HTMLCanvasElement;
@@ -77,31 +79,28 @@ export class ArtMaker {
       throw new Error(`could not find element with id "${divId}"`);
     }
     elem.appendChild(this.glCanvas);
-  }
-
-  /**
-   * start running the art animation
-   * @param seed how to seed the random generation (pass in no arguments for
-   * random seed)
-   */
-  art(seed?: string) {
-    this.source.restore();
-    this.source.save();
 
     this.source.scale(
       this.sourceCanvas.width / H,
       this.sourceCanvas.height / V
     );
+  }
 
-    if (this.curAnimationFrame !== undefined) {
-      cancelAnimationFrame(this.curAnimationFrame);
-    }
+  /**
+   * seeds the random generation
+   * @param seed random seed
+   */
+  seed(seed?: string) {
+    this.originalTime = undefined;
+
+    this.source.restore();
+    this.source.save();
 
     this.rand = new Rand(seed);
     this.timeScale = this.rand.between(0.4, 1.1);
     const effects = [...randomEffects(3, this.rand)];
 
-    const merger = new Merger(effects, this.sourceCanvas, this.gl, {
+    this.merger = new Merger(effects, this.sourceCanvas, this.gl, {
       channels: [null, null],
       edgeMode: "wrap",
     });
@@ -111,16 +110,43 @@ export class ArtMaker {
       [roseDots, 1],
       [bitGrid, 1],
     ]);
-    const drawFunc = chanceTable.pick()(this.rand);
+
+    this.drawFunc = chanceTable.pick()(this.rand);
+    return this;
+  }
+
+  /**
+   * starts requesting animation frames to draw every loop, restarting
+   * the animation if called again
+   */
+  animate() {
+    if (this.curAnimationFrame !== undefined) {
+      cancelAnimationFrame(this.curAnimationFrame);
+      this.curAnimationFrame = undefined;
+    }
 
     const update = (time: number) => {
-      if (this.originalTime === undefined) this.originalTime = time;
-      const t = ((time - this.originalTime) / 1000) * this.timeScale;
-      drawFunc(t, 0, this.source, this.sourceCanvas);
-      merger.draw(t, this.mousePos.x, this.mousePos.y);
+      this.draw(time);
       this.curAnimationFrame = requestAnimationFrame(update);
     };
-
     this.curAnimationFrame = requestAnimationFrame(update);
+    return this;
+  }
+
+  /**
+   * draws to the canvas once
+   * @param time time in milliseconds of the animation
+   */
+  draw(time: number) {
+    if (this.merger === undefined || this.drawFunc === undefined) {
+      this.seed();
+      this.draw(time);
+      return;
+    }
+    if (this.originalTime === undefined) this.originalTime = time;
+    const t = ((time - this.originalTime) / 1000) * this.timeScale;
+    this.drawFunc(t, 0, this.source, this.sourceCanvas);
+    this.merger.draw(t, this.mousePos.x, this.mousePos.y);
+    return this;
   }
 }

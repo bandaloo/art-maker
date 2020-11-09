@@ -13,8 +13,8 @@
   <body>
     a simple example of how to use artmaker.js as a script
     <br />
-    <button onclick="artMaker.art()">randomize</button>
-    <button onclick="artMaker.art('foo')">set seed "foo"</button>
+    <button onclick="artMaker.seed()">randomize</button>
+    <button onclick="artMaker.seed('foo')">set seed "foo"</button>
     <!-- this is the default id of the div that artmaker adds the canvas to -->
     <div id="art"></div>
   </body>
@@ -26,6 +26,6 @@
     // default size is 1920x1080
     const artMaker = new ArtMaker(960);
     // start the animation
-    artMaker.art();
+    artMaker.animate();
   </script>
 </html>
