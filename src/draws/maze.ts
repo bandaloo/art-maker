@@ -34,13 +34,13 @@ export function maze(rand: Rand): DrawFunc {
   const color1: TupleVec3 = [r(), r(), r()];
   const color2: TupleVec3 = [r(), r(), r()];
 
-  const hNum = Math.floor(rand.between(30, 60));
-  const vNum = Math.floor(rand.between(30, 60));
+  const hNum = Math.floor(rand.between(10, 60));
+  const vNum = Math.floor(rand.between(10, 60));
 
   const hSize = H / hNum;
   const vSize = V / vNum;
 
-  const lineWidth = rand.between(5, 10);
+  const lineWidth = rand.between(5, 20);
   const clearBackground = randBackgroundFunc(rand);
 
   const genFunc = (): ((i: number, j: number, t: number) => number) => {

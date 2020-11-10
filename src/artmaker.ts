@@ -35,7 +35,7 @@ function canvasAndContext(
 }
 
 export class ArtMaker {
-  static seedVersion = "1";
+  static seedVersion = "1_1";
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;
@@ -98,7 +98,7 @@ export class ArtMaker {
     this.source.save();
 
     this.rand = new Rand(seed);
-    this.timeScale = this.rand.between(0.4, 1.1);
+    this.timeScale = this.rand.between(0.4, 1) ** 2;
     const effects = [...randomEffects(3, this.rand)];
 
     this.merger = new Merger(effects, this.sourceCanvas, this.gl, {
