@@ -35,7 +35,7 @@ function canvasAndContext(
 }
 
 export class ArtMaker {
-  static seedVersion = "unstable";
+  static seedVersion = "1";
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;

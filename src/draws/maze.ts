@@ -45,7 +45,7 @@ export function maze(rand: Rand): DrawFunc {
 
   const genFunc = (): ((i: number, j: number, t: number) => number) => {
     const s = [...new Array(6)].map(() =>
-      Math.max(rand.random() ** 4 * 9, 0.05)
+      Math.max(9 * rand.random() ** 4, 0.05)
     );
     const amp = rand.between(2, 15);
     return (i: number, j: number, t: number) =>
@@ -67,7 +67,7 @@ export function maze(rand: Rand): DrawFunc {
     for (let i = 0; i < hNum; i++) {
       for (let j = 0; j < vNum; j++) {
         x.strokeStyle = R(
-          ...mix(color1, color2, Math.abs(colorFunc(i, j, t) / 2))
+          ...mix(color1, color2, clamp(colorFunc(i, j, t / 3) / 9, 0, 1))
         );
         drawChar(x, clamp(tiltFunc(i, j, t), -1, 1), i, j, hSize, vSize);
       }

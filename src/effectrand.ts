@@ -189,7 +189,7 @@ export function randomEffects(num: number, rand: Rand): Effect[] {
 
   chanceTable.addAll([
     [kaleidoscopeRand, 2, -Infinity],
-    [noiseDisplacementRand, 3, -1],
+    [noiseDisplacementRand, 2.5, -1],
     [edgeRand, 1],
     [blurAndTraceRand, 0.5, -0.25],
     [vignetteRand, 0.5],
@@ -199,8 +199,8 @@ export function randomEffects(num: number, rand: Rand): Effect[] {
     [bloomRand, 0.25, -Infinity],
     [celShadeRand, 3, -Infinity],
     [colorDisplacementRand, 3],
-    [swirlRand, 1, -Infinity],
-    [repeatRand, 2, -1],
+    [swirlRand, 0.5, -Infinity],
+    [repeatRand, 0.5, -1],
     [grainRand, 1, -Infinity],
   ]);
 
