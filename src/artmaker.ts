@@ -5,6 +5,7 @@ import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
 import { DrawFunc, H, V } from "./utils";
 import { Rand } from "./rand";
+import { maze } from "./draws/maze";
 
 type CanvasPair<T> = [HTMLCanvasElement, T];
 
@@ -34,7 +35,7 @@ function canvasAndContext(
 }
 
 export class ArtMaker {
-  static seedVersion = "0";
+  static seedVersion = "unstable";
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;
@@ -109,6 +110,7 @@ export class ArtMaker {
     chanceTable.addAll([
       [roseDots, 1],
       [bitGrid, 1],
+      [maze, 99999],
     ]);
 
     this.drawFunc = chanceTable.pick()(this.rand);

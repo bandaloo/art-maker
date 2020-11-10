@@ -180,6 +180,7 @@ const grainRand = (rand: Rand) => {
 };
 
 const vignetteRand = (rand: Rand) => {
+  // TODO randomize this
   return vignette();
 };
 
