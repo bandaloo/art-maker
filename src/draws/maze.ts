@@ -1,5 +1,14 @@
 import { Rand } from "../rand";
-import { DrawFunc, H, randBackgroundFunc, TupleVec3, V } from "../utils";
+import {
+  clamp,
+  DrawFunc,
+  H,
+  mix,
+  R,
+  randBackgroundFunc,
+  TupleVec3,
+  V,
+} from "../utils";
 
 export const drawChar = (
   context: CanvasRenderingContext2D,
@@ -11,7 +20,7 @@ export const drawChar = (
   height: number
 ) => {
   const centerX = width * x + width / 2;
-  const y1 = width * x;
+  const y1 = height * y;
   const y2 = height * (y + 1);
 
   context.beginPath();
@@ -33,6 +42,20 @@ export function maze(rand: Rand): DrawFunc {
 
   const lineWidth = rand.between(5, 10);
   const clearBackground = randBackgroundFunc(rand);
+
+  const genFunc = (): ((i: number, j: number, t: number) => number) => {
+    const s = [...new Array(6)].map(() =>
+      Math.max(rand.random() ** 4 * 9, 0.05)
+    );
+    const amp = rand.between(2, 15);
+    return (i: number, j: number, t: number) =>
+      Math.cos(s[0] * t + s[1] * i + s[2] * j) +
+      Math.sin(s[3] * t + s[4] * i + s[5] * j) * amp;
+  };
+
+  const tiltFunc = genFunc();
+  const colorFunc = genFunc();
+
   return (
     t: number,
     fr: number,
@@ -40,11 +63,13 @@ export function maze(rand: Rand): DrawFunc {
     c: HTMLCanvasElement
   ) => {
     x.lineWidth = lineWidth;
-    x.strokeStyle = "black";
     clearBackground(x);
-    for (let i = 0; i < vNum; i++) {
-      for (let j = 0; j < hNum; j++) {
-        drawChar(x, Math.random() < 0.5 ? 1 : -1, i, j, hSize, vSize);
+    for (let i = 0; i < hNum; i++) {
+      for (let j = 0; j < vNum; j++) {
+        x.strokeStyle = R(
+          ...mix(color1, color2, Math.abs(colorFunc(i, j, t) / 2))
+        );
+        drawChar(x, clamp(tiltFunc(i, j, t), -1, 1), i, j, hSize, vSize);
       }
     }
   };

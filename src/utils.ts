@@ -46,3 +46,8 @@ export function randBackgroundFunc(rand: Rand) {
     x.fillRect(0, 0, H, V);
   };
 }
+
+// math
+export function clamp(n: number, lo: number, hi: number) {
+  return Math.min(Math.max(n, lo), hi);
+}

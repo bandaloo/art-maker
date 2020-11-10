@@ -110,7 +110,7 @@ export class ArtMaker {
     chanceTable.addAll([
       [roseDots, 1],
       [bitGrid, 1],
-      [maze, 99999],
+      [maze, 1],
     ]);
 
     this.drawFunc = chanceTable.pick()(this.rand);
