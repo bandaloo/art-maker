@@ -1,6 +1,6 @@
 {
   "name": "artmaker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "art generator that uses the 2D canvas and shaders",
   "main": "dist/index.js",
   "repository": "https://github.com/bandaloo/art-maker",
