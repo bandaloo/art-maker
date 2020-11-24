@@ -24,6 +24,9 @@ import {
   pixel,
   pfloat,
   Float,
+  edgecolor,
+  vec4,
+  blur2d,
 } from "@bandaloo/merge-pass";
 import {
   blurandtrace,
@@ -184,6 +187,29 @@ const vignetteRand = (rand: Rand) => {
   return vignette();
 };
 
+const rainbowEdgeRand = (rand: Rand) => {
+  return edgecolor(hsv2rgb(vec4(op(time(), "+", len(pos())), 1, 1, 1)));
+};
+
+const thermal = (rand: Rand) => {
+  return [
+    blur2d(2, 2, 9),
+    motionblur(0, 0.03),
+    hsv2rgb(
+      vec4(
+        op(
+          op(getcomp(rgb2hsv(fcolor()), "z"), "*", rand.between(0.3, 0.9)),
+          "+",
+          rand.random()
+        ),
+        rand.between(0.2, 1),
+        rand.between(0.85, 1),
+        1
+      )
+    ),
+  ];
+};
+
 export function randomEffects(num: number, rand: Rand): Effect[] {
   const chanceTable = new ChanceTable<EffectFunc>(rand);
 
@@ -202,7 +228,12 @@ export function randomEffects(num: number, rand: Rand): Effect[] {
     [swirlRand, 0.5, -Infinity],
     [repeatRand, 0.5, -1],
     [grainRand, 1, -Infinity],
+    [rainbowEdgeRand, 0.5, -Infinity],
+    [thermal, 0.5, -Infinity],
   ]);
 
-  return chanceTable.pick(num).map((n) => n(rand));
+  return chanceTable
+    .pick(num)
+    .map((n) => n(rand))
+    .flat();
 }

@@ -22,7 +22,7 @@ export type DrawFunc = (
 ) => void;
 
 export type Effect = Vec4 | EffectLoop;
-export type EffectFunc = (rand: Rand) => Effect;
+export type EffectFunc = (rand: Rand) => Effect | Effect[];
 
 export type TupleVec2 = [number, number];
 export type TupleVec3 = [number, number, number];
