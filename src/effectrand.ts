@@ -183,15 +183,29 @@ const grainRand = (rand: Rand) => {
 };
 
 const vignetteRand = (rand: Rand) => {
-  // TODO randomize this
   return vignette();
 };
 
 const rainbowEdgeRand = (rand: Rand) => {
-  return edgecolor(hsv2rgb(vec4(op(time(), "+", len(pos())), 1, 1, 1)));
+  const colExpr = op(
+    op(time(), "*", rand.between(-2, 2)),
+    "+",
+    len(op(pos(), "-", 0.5))
+  );
+  return edgecolor(
+    hsv2rgb(vec4(colExpr, rand.between(0.5, 1), rand.between(0.5, 1), 1))
+  );
 };
 
-const thermal = (rand: Rand) => {
+const sampleEdgeExpr = (rand: Rand) => {
+  const colExpr = channel(
+    -1,
+    op(pos(), "+", vec2(rand.between(0.1, 0.5), rand.between(0.1, 0.5)))
+  );
+  return edgecolor(colExpr);
+};
+
+const thermalRand = (rand: Rand) => {
   return [
     blur2d(2, 2, 9),
     motionblur(0, 0.03),
@@ -229,7 +243,8 @@ export function randomEffects(num: number, rand: Rand): Effect[] {
     [repeatRand, 0.5, -1],
     [grainRand, 1, -Infinity],
     [rainbowEdgeRand, 0.5, -Infinity],
-    [thermal, 0.5, -Infinity],
+    [thermalRand, 0.5, -Infinity],
+    [sampleEdgeExpr, 0.5, -Infinity],
   ]);
 
   return chanceTable
