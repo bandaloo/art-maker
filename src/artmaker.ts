@@ -41,7 +41,7 @@ export interface Colors {
 }
 
 export class ArtMaker {
-  static seedVersion = "unstable";
+  static seedVersion = "2";
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;
@@ -119,7 +119,7 @@ export class ArtMaker {
     chanceTable.addAll([
       [roseDots, 1],
       [bitGrid, 1],
-      [maze, 1],
+      [maze, 0.5],
     ]);
 
     const r = () => Math.floor(rand.random() * 256);
