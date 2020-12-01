@@ -157,12 +157,12 @@ export class ArtMaker {
     return this;
   }
 
-  private setColor(layer: "back" | "fore1" | "fore2", color: TupleVec3) {
+  setColor(layer: "back" | "fore1" | "fore2", color: TupleVec3) {
     if (this.colors === undefined) throw new Error("colors not defined yet");
     this.colors[layer] = color;
   }
 
-  private getColor(layer: "back" | "fore1" | "fore2") {
+  getColor(layer: "back" | "fore1" | "fore2") {
     return this.colors !== undefined
       ? this.colors[layer]
       : ([0, 0, 0] as TupleVec3);

@@ -1,5 +1,5 @@
 import ArtMaker, { Rand } from "./index";
-import { colorVectorToHex, hexColorToVector } from "./utils";
+import { colorVectorToHex, hexColorToVector, TupleVec3 } from "./utils";
 
 export function getQuery(variable: string, query: string) {
   const vars = query.split("&");
@@ -49,29 +49,47 @@ window.addEventListener("keydown", (e) => {
   else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
 });
 
-function updatePath(name: string) {
+function updatePath(name?: string) {
   const searchParams = new URLSearchParams(window.location.search);
-  searchParams.set("s", name);
+  if (name !== undefined) searchParams.set("s", name);
   searchParams.set("v", ArtMaker.seedVersion);
+  searchParams.set(
+    "c",
+    [
+      artMaker.getBackground(),
+      artMaker.getForeground1(),
+      artMaker.getForeground2(),
+    ]
+      .map((c) => colorVectorToHex(c).slice(1))
+      .join("-")
+  );
   const query = window.location.pathname + "?" + searchParams.toString();
   history.pushState(null, "", query);
 }
 
-const backInput = document.getElementById("background") as HTMLInputElement;
-const foreInput1 = document.getElementById("foreground1") as HTMLInputElement;
-const foreInput2 = document.getElementById("foreground2") as HTMLInputElement;
-
-function inputSetup() {
-  backInput.addEventListener("input", () =>
-    artMaker.setBackground(hexColorToVector(backInput.value))
-  );
-  foreInput1.addEventListener("input", () =>
-    artMaker.setForeground1(hexColorToVector(foreInput1.value))
-  );
-  foreInput2.addEventListener("input", () =>
-    artMaker.setForeground2(hexColorToVector(foreInput2.value))
-  );
+function setupInput(
+  input: HTMLInputElement,
+  layer: "back" | "fore1" | "fore2"
+) {
+  input.addEventListener("input", () => {
+    artMaker.setColor(layer, hexColorToVector(input.value));
+  });
+  input.addEventListener("change", () => updatePath());
+  return input;
 }
+
+const backInput = setupInput(
+  document.getElementById("background") as HTMLInputElement,
+  "back"
+);
+const foreInput1 = setupInput(
+  document.getElementById("foreground1") as HTMLInputElement,
+  "fore1"
+);
+const foreInput2 = setupInput(
+  document.getElementById("foreground2") as HTMLInputElement,
+  "fore2"
+);
 
 function inputUpdate() {
   backInput.value = colorVectorToHex(artMaker.getBackground());
@@ -79,12 +97,18 @@ function inputUpdate() {
   foreInput2.value = colorVectorToHex(artMaker.getForeground2());
 }
 
-inputSetup();
+function colorStringsToColors(str: string) {
+  const vals = str.split("-").map((n) => "#" + n);
+  console.log(vals);
+  return vals.map(hexColorToVector);
+}
 
 function main() {
   const preset = window.location.search.substring(1);
   const query = !reset ? getQuery("s", preset) : undefined;
   const version = !reset ? getQuery("v", preset) : undefined;
+  const colors = !reset ? getQuery("c", preset) : undefined;
+  console.log(colors);
   if (version !== undefined && version !== ArtMaker.seedVersion) {
     window.alert(
       "This seed is from a previous version. " +
@@ -98,8 +122,14 @@ function main() {
   if (!reset) artMaker = new ArtMaker();
 
   reset = true;
-  updatePath(seed);
   artMaker.seed(seed);
+  if (colors !== undefined) {
+    const converted = colorStringsToColors(colors);
+    artMaker.setBackground(converted[0]);
+    artMaker.setForeground1(converted[1]);
+    artMaker.setForeground2(converted[2]);
+  }
+  updatePath(seed);
   inputUpdate();
   artMaker.animate();
 }
