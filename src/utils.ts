@@ -42,3 +42,17 @@ export function clearBackground(x: CanvasRenderingContext2D, color: TupleVec3) {
 export function clamp(n: number, lo: number, hi: number) {
   return Math.min(Math.max(n, lo), hi);
 }
+
+// color conversion
+export function hexColorToVector(str: string) {
+  str = str.slice(1); // get rid of first char
+  const vals = str.match(/..?/g); // split into groups of two
+  if (vals === null) throw new Error("no matches for color conversion");
+  if (vals.length !== 3) throw new Error("wrong length for color");
+  const vec = vals.map((n) => parseInt(n, 16));
+  return vec as TupleVec3;
+}
+
+export function colorVectorToHex(color: TupleVec3) {
+  return "#" + color.map((n) => n.toString(16).padStart(2, "0")).join("");
+}

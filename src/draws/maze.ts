@@ -1,15 +1,6 @@
 import { Colors } from "../artmaker";
 import { Rand } from "../rand";
-import {
-  clamp,
-  clearBackground,
-  DrawFunc,
-  H,
-  mix,
-  R,
-  TupleVec3,
-  V,
-} from "../utils";
+import { clamp, clearBackground, DrawFunc, H, mix, R, V } from "../utils";
 
 export const drawChar = (
   context: CanvasRenderingContext2D,

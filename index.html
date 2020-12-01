@@ -13,7 +13,8 @@
         font-family: Helvetica, sans-serif;
       }
       h1,
-      p {
+      p,
+      span {
         color: white;
       }
       h1 {
@@ -33,15 +34,24 @@
         pointer-events: all;
       }
 
+      .simple {
+        background: #000000aa;
+        padding: 16px;
+        border: 2px solid white;
+      }
+
+      .colorbar {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+      }
+
       .instructions {
+        width: 400px;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: #000000aa;
-        padding: 16px;
-        border: 2px solid white;
-        width: 400px;
         pointer-events: none;
         visibility: hidden;
       }
@@ -55,7 +65,7 @@
   </head>
   <body>
     <div id="art">
-      <div class="instructions" id="instructions">
+      <div class="simple instructions" id="instructions">
         <h1>art maker</h1>
         <p>
           Press 'r' to get a new animation and 'f' for fullscreen. Copy the link
@@ -78,6 +88,12 @@
         <button id="gotit">Got it</button>
         <button id="more">More</button>
       </div>
+    </div>
+    <div class="simple colorbar">
+      <span><b>colors:</b></span>
+      <input type="color" id="background" />
+      <input type="color" id="foreground1" />
+      <input type="color" id="foreground2" />
     </div>
   </body>
   <script src="bundle.js"></script>

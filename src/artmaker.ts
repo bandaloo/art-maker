@@ -53,7 +53,7 @@ export class ArtMaker {
   readonly gl: WebGL2RenderingContext;
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
-  colors?: Colors;
+  private colors?: Colors;
 
   /**
    * constructs an ArtMaker
@@ -122,7 +122,7 @@ export class ArtMaker {
       [maze, 1],
     ]);
 
-    const r = () => rand.random() * 255;
+    const r = () => Math.floor(rand.random() * 256);
     const backChance = rand.random();
     this.colors = {
       fore1: [r(), r(), r()],
@@ -155,6 +155,41 @@ export class ArtMaker {
     };
     this.curAnimationFrame = requestAnimationFrame(update);
     return this;
+  }
+
+  private setColor(layer: "back" | "fore1" | "fore2", color: TupleVec3) {
+    if (this.colors === undefined) throw new Error("colors not defined yet");
+    this.colors[layer] = color;
+  }
+
+  private getColor(layer: "back" | "fore1" | "fore2") {
+    return this.colors !== undefined
+      ? this.colors[layer]
+      : ([0, 0, 0] as TupleVec3);
+  }
+
+  setBackground(color: TupleVec3) {
+    this.setColor("back", color);
+  }
+
+  getBackground() {
+    return this.getColor("back");
+  }
+
+  setForeground1(color: TupleVec3) {
+    this.setColor("fore1", color);
+  }
+
+  getForeground1() {
+    return this.getColor("fore1");
+  }
+
+  setForeground2(color: TupleVec3) {
+    this.setColor("fore2", color);
+  }
+
+  getForeground2() {
+    return this.getColor("fore2");
   }
 
   /**

@@ -1,4 +1,5 @@
 import ArtMaker, { Rand } from "./index";
+import { colorVectorToHex, hexColorToVector } from "./utils";
 
 export function getQuery(variable: string, query: string) {
   const vars = query.split("&");
@@ -56,6 +57,30 @@ function updatePath(name: string) {
   history.pushState(null, "", query);
 }
 
+const backInput = document.getElementById("background") as HTMLInputElement;
+const foreInput1 = document.getElementById("foreground1") as HTMLInputElement;
+const foreInput2 = document.getElementById("foreground2") as HTMLInputElement;
+
+function inputSetup() {
+  backInput.addEventListener("input", () =>
+    artMaker.setBackground(hexColorToVector(backInput.value))
+  );
+  foreInput1.addEventListener("input", () =>
+    artMaker.setForeground1(hexColorToVector(foreInput1.value))
+  );
+  foreInput2.addEventListener("input", () =>
+    artMaker.setForeground2(hexColorToVector(foreInput2.value))
+  );
+}
+
+function inputUpdate() {
+  backInput.value = colorVectorToHex(artMaker.getBackground());
+  foreInput1.value = colorVectorToHex(artMaker.getForeground1());
+  foreInput2.value = colorVectorToHex(artMaker.getForeground2());
+}
+
+inputSetup();
+
 function main() {
   const preset = window.location.search.substring(1);
   const query = !reset ? getQuery("s", preset) : undefined;
@@ -75,6 +100,7 @@ function main() {
   reset = true;
   updatePath(seed);
   artMaker.seed(seed);
+  inputUpdate();
   artMaker.animate();
 }
 
