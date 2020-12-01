@@ -1,11 +1,12 @@
+import { Colors } from "../artmaker";
 import { Rand } from "../rand";
 import {
   clamp,
+  clearBackground,
   DrawFunc,
   H,
   mix,
   R,
-  randBackgroundFunc,
   TupleVec3,
   V,
 } from "../utils";
@@ -29,11 +30,7 @@ export const drawChar = (
   context.stroke();
 };
 
-export function maze(rand: Rand): DrawFunc {
-  const r = () => rand.random() * 255;
-  const color1: TupleVec3 = [r(), r(), r()];
-  const color2: TupleVec3 = [r(), r(), r()];
-
+export function maze(rand: Rand, colors: Colors): DrawFunc {
   const hNum = Math.floor(rand.between(10, 60));
   const vNum = Math.floor(rand.between(10, 60));
 
@@ -41,7 +38,6 @@ export function maze(rand: Rand): DrawFunc {
   const vSize = V / vNum;
 
   const lineWidth = rand.between(5, 20);
-  const clearBackground = randBackgroundFunc(rand);
 
   const genFunc = (): ((i: number, j: number, t: number) => number) => {
     const s = [...new Array(6)].map(() =>
@@ -56,18 +52,17 @@ export function maze(rand: Rand): DrawFunc {
   const tiltFunc = genFunc();
   const colorFunc = genFunc();
 
-  return (
-    t: number,
-    fr: number,
-    x: CanvasRenderingContext2D,
-    c: HTMLCanvasElement
-  ) => {
+  return (t: number, x: CanvasRenderingContext2D) => {
     x.lineWidth = lineWidth;
-    clearBackground(x);
+    clearBackground(x, colors.back);
     for (let i = 0; i < hNum; i++) {
       for (let j = 0; j < vNum; j++) {
         x.strokeStyle = R(
-          ...mix(color1, color2, clamp(colorFunc(i, j, t / 3) / 9, 0, 1))
+          ...mix(
+            colors.fore1,
+            colors.fore2,
+            clamp(colorFunc(i, j, t / 3) / 9, 0, 1)
+          )
         );
         drawChar(x, clamp(tiltFunc(i, j, t), -1, 1), i, j, hSize, vSize);
       }

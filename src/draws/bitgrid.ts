@@ -1,26 +1,14 @@
 import { ChanceTable } from "../chancetable";
-import {
-  H,
-  V,
-  R,
-  DrawFunc,
-  mix,
-  TupleVec3,
-  randBackgroundFunc,
-} from "../utils";
+import { H, V, R, DrawFunc, mix, TupleVec3, clearBackground } from "../utils";
 import { Rand } from "../rand";
+import { Colors } from "../artmaker";
 
 type ColorFunc = (i: number, j: number) => number;
 type SizeFunc = (i: number, j: number, t: number) => number;
 
-export function bitGrid(rand: Rand): DrawFunc {
-  const r = () => rand.random() * 255;
-  const color1: TupleVec3 = [r(), r(), r()];
-  const color2: TupleVec3 = [r(), r(), r()];
+export function bitGrid(rand: Rand, colors: Colors): DrawFunc {
   const hNum = Math.floor(rand.between(15, 40));
   const vNum = Math.floor(rand.between(15, 40));
-
-  const clearBackground = randBackgroundFunc(rand);
 
   const smooth = rand.random() > 0.2;
 
@@ -79,13 +67,8 @@ export function bitGrid(rand: Rand): DrawFunc {
   const overscanX = iSpeed !== 0 ? overscan : 0;
   const overscanY = jSpeed !== 0 ? overscan : 0;
 
-  return (
-    t: number,
-    fr: number,
-    x: CanvasRenderingContext2D,
-    c: HTMLCanvasElement
-  ) => {
-    clearBackground(x);
+  return (t: number, x: CanvasRenderingContext2D) => {
+    clearBackground(x, colors.back);
     for (let i = 0 - overscanX; i < hNum + 1 + overscanX; i++) {
       const ri = Math.floor(i + t * iSpeed);
       const iOffset = smooth ? (t * iSpeed) % 1 : 0;
@@ -93,7 +76,7 @@ export function bitGrid(rand: Rand): DrawFunc {
         const rj = Math.floor(j + t * jSpeed);
         const jOffset = smooth ? (t * jSpeed) % 1 : 0;
         const size = sizeFunc(ri, rj, t);
-        x.fillStyle = R(...mix(color1, color2, colorFunc(ri, rj)));
+        x.fillStyle = R(...mix(colors.fore1, colors.fore2, colorFunc(ri, rj)));
         x.fillRect(
           (i - iOffset) * hSize,
           (j - jOffset) * vSize,

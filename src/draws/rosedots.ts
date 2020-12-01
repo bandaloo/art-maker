@@ -8,20 +8,20 @@ import {
   DrawFunc,
   mix,
   TupleVec3,
-  randBackgroundFunc,
+  clearBackground,
 } from "../utils";
 import { Rand } from "../rand";
+import { Colors } from "../artmaker";
 
-export function roseDots(rand: Rand): DrawFunc {
+export function roseDots(rand: Rand, colors: Colors): DrawFunc {
   // common attributes
-  const r = () => rand.random() * 255;
-  const color1: TupleVec3 = [r(), r(), r()];
-  const color2: TupleVec3 = [r(), r(), r()];
+  //const r = () => rand.random() * 255;
+  //const color1: TupleVec3 = [r(), r(), r()];
+  //const color2: TupleVec3 = [r(), r(), r()];
   const size = 0.5 + rand.random();
   const freq = 0.8 + rand.random();
   const speed = rand.between(0.25, 1.75);
   const num = Math.floor(rand.between(30, 70));
-  const clearBackground = randBackgroundFunc(rand);
 
   // specific to second drawing pattern
   const lineWidth = rand.between(3, 15);
@@ -40,13 +40,8 @@ export function roseDots(rand: Rand): DrawFunc {
   const freq3 = rand.between(0.2, 2);
 
   return rand.random() < 0.5
-    ? (
-        t: number,
-        fr: number,
-        x: CanvasRenderingContext2D,
-        c: HTMLCanvasElement
-      ) => {
-        clearBackground(x);
+    ? (t: number, x: CanvasRenderingContext2D) => {
+        clearBackground(x, colors.back);
         for (let i = 0; i < num; i += 0.5) {
           x.beginPath();
           let d = 2 * C((2 + S((speed * t) / 99)) * 2 * i);
@@ -57,21 +52,18 @@ export function roseDots(rand: Rand): DrawFunc {
             0,
             Math.PI * 2
           );
-          x.fillStyle = R(...mix(color1, color2, i / 50));
+          x.fillStyle = R(...mix(colors.fore1, colors.fore2, i / 50));
           x.fill();
         }
       }
-    : (
-        t: number,
-        fr: number,
-        x: CanvasRenderingContext2D,
-        c: HTMLCanvasElement
-      ) => {
-        clearBackground(x);
+    : (t: number, x: CanvasRenderingContext2D) => {
+        clearBackground(x, colors.back);
         x.lineWidth = lineWidth;
         x.setLineDash(segments);
         for (let i = 0; i < copies; i++) {
-          x.strokeStyle = R(...mix(color1, color2, i / (copies - 1)));
+          x.strokeStyle = R(
+            ...mix(colors.fore1, colors.fore2, i / (copies - 1))
+          );
           x.beginPath();
           for (let j = 0; j < num; j++) {
             x.lineTo(

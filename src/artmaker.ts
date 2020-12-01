@@ -3,7 +3,7 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, H, V } from "./utils";
+import { DrawFunc, TupleVec3, H, V } from "./utils";
 import { Rand } from "./rand";
 import { maze } from "./draws/maze";
 
@@ -34,6 +34,12 @@ function canvasAndContext(
   return [canvas, context];
 }
 
+export interface Colors {
+  fore1: TupleVec3;
+  fore2: TupleVec3;
+  back: TupleVec3;
+}
+
 export class ArtMaker {
   static seedVersion = "unstable";
   private curAnimationFrame?: number;
@@ -47,6 +53,7 @@ export class ArtMaker {
   readonly gl: WebGL2RenderingContext;
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
+  colors?: Colors;
 
   /**
    * constructs an ArtMaker
@@ -97,23 +104,38 @@ export class ArtMaker {
     this.source.restore();
     this.source.save();
 
-    this.rand = new Rand(seed);
-    this.timeScale = this.rand.between(0.4, 1) ** 2;
-    const effects = [...randomEffects(3, this.rand)];
+    const rand = new Rand(seed);
+    this.timeScale = rand.between(0.4, 1) ** 2;
+    const effects = [...randomEffects(3, rand)];
 
     this.merger = new Merger(effects, this.sourceCanvas, this.gl, {
       channels: [null, null],
       edgeMode: "wrap",
     });
 
-    const chanceTable = new ChanceTable<(rand: Rand) => DrawFunc>(this.rand);
+    const chanceTable = new ChanceTable<
+      (rand: Rand, colors: Colors) => DrawFunc
+    >(rand);
     chanceTable.addAll([
       [roseDots, 1],
       [bitGrid, 1],
       [maze, 1],
     ]);
 
-    this.drawFunc = chanceTable.pick()(this.rand);
+    const r = () => rand.random() * 255;
+    const backChance = rand.random();
+    this.colors = {
+      fore1: [r(), r(), r()],
+      fore2: [r(), r(), r()],
+      back:
+        backChance < 0.1
+          ? [r(), r(), r()]
+          : backChance < 0.55
+          ? [0, 0, 0]
+          : [255, 255, 255],
+    };
+    this.drawFunc = chanceTable.pick()(rand, this.colors);
+    this.rand = rand;
     return this;
   }
 
@@ -147,7 +169,7 @@ export class ArtMaker {
     }
     if (this.originalTime === undefined) this.originalTime = time;
     const t = ((time - this.originalTime) / 1000) * this.timeScale;
-    this.drawFunc(t, 0, this.source, this.sourceCanvas);
+    this.drawFunc(t, this.source);
     this.merger.draw(t, this.mousePos.x, this.mousePos.y);
     return this;
   }

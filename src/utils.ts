@@ -14,12 +14,7 @@ export const R = (r?: any, g?: any, b?: any, a: any = 1) =>
   `rgba(${r | 0},${g | 0},${b | 0},${a})`;
 
 // types
-export type DrawFunc = (
-  t: number,
-  fr: number, // TODO get rid of this
-  x: CanvasRenderingContext2D,
-  c: HTMLCanvasElement
-) => void;
+export type DrawFunc = (t: number, x: CanvasRenderingContext2D) => void;
 
 export type Effect = Vec4 | EffectLoop;
 export type EffectFunc = (rand: Rand) => Effect | Effect[];
@@ -38,13 +33,9 @@ export function mix<T extends TupleVec>(a: T, b: T, num: number): T {
 }
 
 // drawing functions
-export function randBackgroundFunc(rand: Rand) {
-  const b = Math.floor(rand.random() * 2) * 255;
-  const background = R(b, b, b);
-  return (x: CanvasRenderingContext2D) => {
-    x.fillStyle = background;
-    x.fillRect(0, 0, H, V);
-  };
+export function clearBackground(x: CanvasRenderingContext2D, color: TupleVec3) {
+  x.fillStyle = R(...color);
+  x.fillRect(0, 0, H, V);
 }
 
 // math
