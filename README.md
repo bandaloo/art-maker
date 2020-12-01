@@ -86,6 +86,14 @@ call `draw` in your game loop, passing in the current time in milliseconds:
 artMaker.draw(ticks * 60 * 1000);
 ```
 
+You can override the color palette of the pattern with
+`artMaker.setBackground([r, g, b])`, `artMaker.setForeground1([r, g, b])` and
+`artMaker.setForeground2([r, g, b])`. Note that many of the random effects do
+some form of color grading, so the colors you set might be completely
+different in the final image. The
+[live demo](https://www.bandaloo.fun/art-maker) is a good way to experiment
+with this; you can override colors with the controls in the top left.
+
 Note that before 1.0, the generative algorithm might change, thus breaking
 seeds you might have saved from previous versions. If you save a shareable
 link from the [live demo](https://www.bandaloo.fun/art-maker) and try to
