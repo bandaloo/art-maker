@@ -23,7 +23,6 @@ if (instructions === null) throw new Error("instructions div was null");
 instructions.style.visibility = "visible";
 
 gotIt.addEventListener("click", () => {
-  console.log("clicked");
   instructions?.remove();
 });
 
@@ -40,7 +39,6 @@ more.addEventListener("click", () => {
   } else {
     more.innerText = "More";
     info.style.display = "none";
-    console.log(info.style.display);
   }
 });
 
@@ -99,7 +97,6 @@ function inputUpdate() {
 
 function colorStringsToColors(str: string) {
   const vals = str.split("-").map((n) => "#" + n);
-  console.log(vals);
   return vals.map(hexColorToVector);
 }
 
@@ -108,7 +105,6 @@ function main() {
   const query = !reset ? getQuery("s", preset) : undefined;
   const version = !reset ? getQuery("v", preset) : undefined;
   const colors = !reset ? getQuery("c", preset) : undefined;
-  console.log(colors);
   if (version !== undefined && version !== ArtMaker.seedVersion) {
     window.alert(
       "This seed is from a previous version. " +
