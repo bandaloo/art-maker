@@ -54,7 +54,6 @@ export class ArtMaker {
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
   private colors?: Colors;
-  private lastSeed?: string;
   private lastTime?: number;
 
   /**
@@ -101,7 +100,6 @@ export class ArtMaker {
    * @param seed random seed
    */
   seed(seed?: string) {
-    this.lastSeed = seed;
     this.originalTime = undefined;
 
     this.source.restore();
@@ -159,45 +157,53 @@ export class ArtMaker {
     return this;
   }
 
+  /** sets any color */
   setColor(layer: "back" | "fore1" | "fore2", color: TupleVec3) {
     if (this.colors === undefined) throw new Error("colors not defined yet");
     this.colors[layer] = color;
   }
 
+  /** gets any color */
   getColor(layer: "back" | "fore1" | "fore2") {
     return this.colors !== undefined
       ? this.colors[layer]
       : ([0, 0, 0] as TupleVec3);
   }
 
+  /** sets background color */
   setBackground(color: TupleVec3) {
     this.setColor("back", color);
   }
 
+  /** gets background color */
   getBackground() {
     return this.getColor("back");
   }
 
+  /** sets first foreground color */
   setForeground1(color: TupleVec3) {
     this.setColor("fore1", color);
   }
 
+  /** gets first foreground color */
   getForeground1() {
     return this.getColor("fore1");
   }
 
+  /** sets second foreground color */
   setForeground2(color: TupleVec3) {
     this.setColor("fore2", color);
   }
 
+  /** gets second foreground color */
   getForeground2() {
     return this.getColor("fore2");
   }
 
-  getLastSeed() {
-    return this.lastSeed;
-  }
-
+  /**
+   * gets the time in ms of last rendered frame, returning 0 if animation has
+   * not started yet
+   */
   getTime() {
     return this.lastTime ?? 0;
   }
@@ -232,7 +238,10 @@ export class ArtMaker {
     return this;
   }
 
-  /** will start a download of the image on the next render */
+  /**
+   * will start a download of the image on the next render
+   * @param name filename (excluding .png which is added automatically)
+   */
   download(name?: string) {
     this.downloadInfo.run = true;
     this.downloadInfo.name = name;
