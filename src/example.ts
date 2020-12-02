@@ -14,6 +14,7 @@ export function getQuery(variable: string, query: string) {
 
 let reset = false;
 let artMaker: ArtMaker;
+let seed: string;
 
 {
   const gotIt = document.getElementById("gotit");
@@ -43,16 +44,29 @@ let artMaker: ArtMaker;
     }
   });
 
+  const topControls = document.getElementById("topui");
+  if (topControls === null) throw new Error("top div was null");
+
   window.addEventListener("keydown", (e) => {
     if (e.key === "r") main();
     else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
+    else if (e.key === "h") {
+      if (topControls.style.display === "none") {
+        topControls.style.display = "block";
+      } else {
+        topControls.style.display = "none";
+      }
+    }
   });
 
   const download = document.getElementById("download");
   if (download === null) throw new Error("download button was null");
 
+  const nameField = document.getElementById("filename");
+  if (nameField === null) throw new Error("name field was null");
+
   download.addEventListener("click", () => {
-    artMaker.download();
+    artMaker.download(filename((nameField as HTMLInputElement).value));
   });
 }
 
@@ -60,16 +74,7 @@ function updatePath(name?: string) {
   const searchParams = new URLSearchParams(window.location.search);
   if (name !== undefined) searchParams.set("s", name);
   searchParams.set("v", ArtMaker.seedVersion);
-  searchParams.set(
-    "c",
-    [
-      artMaker.getBackground(),
-      artMaker.getForeground1(),
-      artMaker.getForeground2(),
-    ]
-      .map((c) => colorVectorToHex(c).slice(1))
-      .join("-")
-  );
+  searchParams.set("c", colorString());
   const query = window.location.pathname + "?" + searchParams.toString();
   history.pushState(null, "", query);
 }
@@ -83,6 +88,23 @@ function setupInput(
   });
   input.addEventListener("change", () => updatePath());
   return input;
+}
+
+function colorString() {
+  const a = artMaker;
+  return [a.getBackground(), a.getForeground1(), a.getForeground2()]
+    .map((c) => colorVectorToHex(c).slice(1))
+    .join("-");
+}
+
+function filename(str: string) {
+  return [
+    str,
+    "v" + ArtMaker.seedVersion,
+    seed,
+    colorString(),
+    "t" + Math.floor(artMaker.getTime()),
+  ].join("-");
 }
 
 const backInput = setupInput(
@@ -120,7 +142,7 @@ function main() {
         "You won't see same pattern from when you first saved the URL."
     );
   }
-  const seed = query ?? Rand.randString(8);
+  seed = query ?? Rand.randString(8);
   console.log("seed:", seed);
 
   if (seed === undefined) throw new Error("seed was somehow undefined");

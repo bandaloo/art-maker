@@ -3,7 +3,7 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, TupleVec3, H, V } from "./utils";
+import { DrawFunc, TupleVec3, H, V, colorVectorToHex } from "./utils";
 import { Rand } from "./rand";
 import { maze } from "./draws/maze";
 
@@ -47,14 +47,15 @@ export class ArtMaker {
   private timeScale = 1;
   private merger?: Merger;
   private drawFunc?: DrawFunc;
-  private rand?: Rand; // TODO get rid of this
   private mousePos: { x: number; y: number };
-  private doDownload = false;
+  private downloadInfo: { run: boolean; name?: string } = { run: false };
   readonly glCanvas: HTMLCanvasElement;
   readonly gl: WebGL2RenderingContext;
   readonly sourceCanvas: HTMLCanvasElement;
   readonly source: CanvasRenderingContext2D;
   private colors?: Colors;
+  private lastSeed?: string;
+  private lastTime?: number;
 
   /**
    * constructs an ArtMaker
@@ -100,6 +101,7 @@ export class ArtMaker {
    * @param seed random seed
    */
   seed(seed?: string) {
+    this.lastSeed = seed;
     this.originalTime = undefined;
 
     this.source.restore();
@@ -136,7 +138,6 @@ export class ArtMaker {
           : [255, 255, 255],
     };
     this.drawFunc = chanceTable.pick()(rand, this.colors);
-    this.rand = rand;
     return this;
   }
 
@@ -193,11 +194,20 @@ export class ArtMaker {
     return this.getColor("fore2");
   }
 
+  getLastSeed() {
+    return this.lastSeed;
+  }
+
+  getTime() {
+    return this.lastTime ?? 0;
+  }
+
   /**
    * draws to the canvas once
    * @param time time in milliseconds of the animation
    */
   draw(time: number) {
+    this.lastTime = time;
     if (this.merger === undefined || this.drawFunc === undefined) {
       this.seed();
       this.draw(time);
@@ -210,19 +220,21 @@ export class ArtMaker {
     // we need to download the canvas directly after rendering, or else the
     // downloaded image will be blank (browsers clear the buffer right after
     // rendering for security reasons)
-    if (this.doDownload) {
-      this.doDownload = false;
+    if (this.downloadInfo.run) {
       const image = this.glCanvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
-      link.download = "artmaker.png";
+      link.download = `${this.downloadInfo.name ?? "artmaker"}.png`;
       link.href = image;
       link.click();
+      this.downloadInfo.run = false;
+      this.downloadInfo.name = undefined;
     }
     return this;
   }
 
   /** will start a download of the image on the next render */
-  download() {
-    this.doDownload = true;
+  download(name?: string) {
+    this.downloadInfo.run = true;
+    this.downloadInfo.name = name;
   }
 }
