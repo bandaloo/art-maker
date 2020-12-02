@@ -47,8 +47,9 @@ export class ArtMaker {
   private timeScale = 1;
   private merger?: Merger;
   private drawFunc?: DrawFunc;
-  private rand?: Rand;
+  private rand?: Rand; // TODO get rid of this
   private mousePos: { x: number; y: number };
+  private doDownload = false;
   readonly glCanvas: HTMLCanvasElement;
   readonly gl: WebGL2RenderingContext;
   readonly sourceCanvas: HTMLCanvasElement;
@@ -206,6 +207,22 @@ export class ArtMaker {
     const t = ((time - this.originalTime) / 1000) * this.timeScale;
     this.drawFunc(t, this.source);
     this.merger.draw(t, this.mousePos.x, this.mousePos.y);
+    // we need to download the canvas directly after rendering, or else the
+    // downloaded image will be blank (browsers clear the buffer right after
+    // rendering for security reasons)
+    if (this.doDownload) {
+      this.doDownload = false;
+      const image = this.glCanvas.toDataURL("image/png", 1.0);
+      const link = document.createElement("a");
+      link.download = "artmaker.png";
+      link.href = image;
+      link.click();
+    }
     return this;
+  }
+
+  /** will start a download of the image on the next render */
+  download() {
+    this.doDownload = true;
   }
 }

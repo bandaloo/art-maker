@@ -1,5 +1,5 @@
 import ArtMaker, { Rand } from "./index";
-import { colorVectorToHex, hexColorToVector, TupleVec3 } from "./utils";
+import { colorVectorToHex, hexColorToVector } from "./utils";
 
 export function getQuery(variable: string, query: string) {
   const vars = query.split("&");
@@ -15,37 +15,46 @@ export function getQuery(variable: string, query: string) {
 let reset = false;
 let artMaker: ArtMaker;
 
-const gotIt = document.getElementById("gotit");
-if (gotIt === null) throw new Error("got it button was null");
+{
+  const gotIt = document.getElementById("gotit");
+  if (gotIt === null) throw new Error("got it button was null");
 
-const instructions = document.getElementById("instructions");
-if (instructions === null) throw new Error("instructions div was null");
-instructions.style.visibility = "visible";
+  const instructions = document.getElementById("instructions");
+  if (instructions === null) throw new Error("instructions div was null");
+  instructions.style.visibility = "visible";
 
-gotIt.addEventListener("click", () => {
-  instructions?.remove();
-});
+  gotIt.addEventListener("click", () => {
+    instructions?.remove();
+  });
 
-const more = document.getElementById("more");
-if (more === null) throw new Error("more button was null");
+  const more = document.getElementById("more");
+  if (more === null) throw new Error("more button was null");
 
-const info = document.getElementById("info");
-if (info === null) throw new Error("info div was null");
+  const info = document.getElementById("info");
+  if (info === null) throw new Error("info div was null");
 
-more.addEventListener("click", () => {
-  if (info.style.display === "none") {
-    more.innerText = "Less";
-    info.style.display = "block";
-  } else {
-    more.innerText = "More";
-    info.style.display = "none";
-  }
-});
+  more.addEventListener("click", () => {
+    if (info.style.display === "none") {
+      more.innerText = "Less";
+      info.style.display = "block";
+    } else {
+      more.innerText = "More";
+      info.style.display = "none";
+    }
+  });
 
-window.addEventListener("keydown", (e) => {
-  if (e.key === "r") main();
-  else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
-});
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "r") main();
+    else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
+  });
+
+  const download = document.getElementById("download");
+  if (download === null) throw new Error("download button was null");
+
+  download.addEventListener("click", () => {
+    artMaker.download();
+  });
+}
 
 function updatePath(name?: string) {
   const searchParams = new URLSearchParams(window.location.search);
