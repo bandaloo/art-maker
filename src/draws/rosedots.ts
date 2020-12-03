@@ -1,23 +1,10 @@
 import { ChanceTable } from "../chancetable";
-import {
-  H,
-  V,
-  S,
-  C,
-  R,
-  DrawFunc,
-  mix,
-  TupleVec3,
-  clearBackground,
-} from "../utils";
+import { H, V, S, C, R, DrawFunc, mix, clearBackground } from "../utils";
 import { Rand } from "../rand";
 import { Colors } from "../artmaker";
 
 export function roseDots(rand: Rand, colors: Colors): DrawFunc {
   // common attributes
-  //const r = () => rand.random() * 255;
-  //const color1: TupleVec3 = [r(), r(), r()];
-  //const color2: TupleVec3 = [r(), r(), r()];
   const size = 0.5 + rand.random();
   const freq = 0.8 + rand.random();
   const speed = rand.between(0.25, 1.75);

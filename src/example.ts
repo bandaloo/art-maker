@@ -47,7 +47,20 @@ let seed: string;
   const topControls = document.getElementById("topui");
   if (topControls === null) throw new Error("top div was null");
 
+  const download = document.getElementById("download");
+  if (download === null) throw new Error("download button was null");
+
+  const nameField = document.getElementById("filename");
+  if (nameField === null) throw new Error("name field was null");
+
+  //nameField.addEventListener("input", (e) => e.preventDefault());
+
+  download.addEventListener("click", () => {
+    artMaker.download(filename((nameField as HTMLInputElement).value));
+  });
+
   window.addEventListener("keydown", (e) => {
+    if (document.activeElement === nameField) return;
     if (e.key === "r") main();
     else if (e.key === "f") artMaker.glCanvas.requestFullscreen();
     else if (e.key === "h") {
@@ -57,16 +70,6 @@ let seed: string;
         topControls.style.display = "none";
       }
     }
-  });
-
-  const download = document.getElementById("download");
-  if (download === null) throw new Error("download button was null");
-
-  const nameField = document.getElementById("filename");
-  if (nameField === null) throw new Error("name field was null");
-
-  download.addEventListener("click", () => {
-    artMaker.download(filename((nameField as HTMLInputElement).value));
   });
 }
 

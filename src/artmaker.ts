@@ -3,9 +3,10 @@ import { ChanceTable } from "./chancetable";
 import { bitGrid } from "./draws/bitgrid";
 import { roseDots } from "./draws/rosedots";
 import { randomEffects } from "./effectrand";
-import { DrawFunc, TupleVec3, H, V, colorVectorToHex } from "./utils";
+import { DrawFunc, TupleVec3, H, V } from "./utils";
 import { Rand } from "./rand";
 import { maze } from "./draws/maze";
+import { branchingTree } from "./branchingtree";
 
 type CanvasPair<T> = [HTMLCanvasElement, T];
 
@@ -121,6 +122,7 @@ export class ArtMaker {
       [roseDots, 1],
       [bitGrid, 1],
       [maze, 0.5],
+      [branchingTree, 0.5],
     ]);
 
     const r = () => Math.floor(rand.random() * 256);
