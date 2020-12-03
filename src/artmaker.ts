@@ -42,7 +42,7 @@ export interface Colors {
 }
 
 export class ArtMaker {
-  static seedVersion = "2";
+  static seedVersion = "unstable";
   private curAnimationFrame?: number;
   private originalTime?: number;
   private timeScale = 1;
