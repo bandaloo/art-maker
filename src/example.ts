@@ -73,11 +73,15 @@ let seed: string;
   });
 }
 
-function updatePath(name?: string) {
+function updatePath(name?: string, doColors = true) {
   const searchParams = new URLSearchParams(window.location.search);
   if (name !== undefined) searchParams.set("s", name);
   searchParams.set("v", ArtMaker.seedVersion);
-  searchParams.set("c", colorString());
+  if (doColors) {
+    searchParams.set("c", colorString());
+  } else {
+    searchParams.delete("c");
+  }
   const query = window.location.pathname + "?" + searchParams.toString();
   history.pushState(null, "", query);
 }
@@ -151,7 +155,6 @@ function main() {
   if (seed === undefined) throw new Error("seed was somehow undefined");
   if (!reset) artMaker = new ArtMaker();
 
-  reset = true;
   artMaker.seed(seed);
   if (colors !== undefined) {
     const converted = colorStringsToColors(colors);
@@ -159,8 +162,10 @@ function main() {
     artMaker.setForeground1(converted[1]);
     artMaker.setForeground2(converted[2]);
   }
-  updatePath(seed);
+
+  updatePath(seed, !(colors === undefined || reset));
   inputUpdate();
+  reset = true;
   artMaker.animate();
 }
 
