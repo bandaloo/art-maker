@@ -53,8 +53,6 @@ let seed: string;
   const nameField = document.getElementById("filename");
   if (nameField === null) throw new Error("name field was null");
 
-  //nameField.addEventListener("input", (e) => e.preventDefault());
-
   download.addEventListener("click", () => {
     artMaker.download(filename((nameField as HTMLInputElement).value));
   });

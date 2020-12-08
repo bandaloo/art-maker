@@ -207,7 +207,7 @@ export class ArtMaker {
    * not started yet
    */
   getTime() {
-    return this.lastTime ?? 0;
+    return (this.lastTime ?? 0) - (this.originalTime ?? 0);
   }
 
   /**
