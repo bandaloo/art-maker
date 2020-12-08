@@ -109,7 +109,9 @@ function filename(str: string) {
     str,
     "v" + ArtMaker.seedVersion,
     seed,
-    colorString(),
+    ...(new URLSearchParams(window.location.search).has("c")
+      ? [colorString()]
+      : []),
     "t" + Math.floor(artMaker.getTime()),
   ].join("-");
 }
